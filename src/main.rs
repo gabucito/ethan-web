@@ -24,6 +24,11 @@ async fn main() {
     // Initialize cache
     let cache_manager = CacheManager::new();
 
+    // Get the static files directory relative to the executable
+    let exe_path = std::env::current_exe().unwrap();
+    let exe_dir = exe_path.parent().unwrap();
+    let static_path = exe_dir.join("static");
+
     // Initialize app state
     let app_state = Arc::new(AppState {
         cache_manager: Arc::new(cache_manager),
@@ -36,7 +41,7 @@ async fn main() {
         .route("/", get(home_handler))
         .route("/resume", get(resume_handler))
         .route("/resume2", get(resume2_handler))
-        .nest_service("/static", ServeDir::new("static"))
+        .nest_service("/static", ServeDir::new(static_path))
         .with_state(app_state);
 
     // Start the server
