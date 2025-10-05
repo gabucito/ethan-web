@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}Resume{% endblock %}
+
+{% block content %}
+<div class="resume-container">
+    <nav class="resume-nav">
+        <ul>
+            <li><a href="#personal-info" class="nav-link" data-target="personal-info">Personal Info</a></li>
+            <li><a href="#education" class="nav-link" data-target="education">Education</a></li>
+            <li><a href="#skills" class="nav-link" data-target="skills">Skills</a></li>
+            <li><a href="#experience" class="nav-link" data-target="experience">Experience</a></li>
+            <li><a href="#projects" class="nav-link" data-target="projects">Projects</a></li>
+            <li><a href="#awards" class="nav-link" data-target="awards">Awards</a></li>
+            <li><a href="#certifications" class="nav-link" data-target="certifications">Certifications</a></li>
+        </ul>
+    </nav>
+
+    <main class="resume-content">
+        <section id="personal-info" class="resume-section">
+            <h1>{{ resume.personal_info.name }}</h1>
+            <p><strong>Phone:</strong> {{ resume.personal_info.phone }}</p>
+            <p><strong>Email:</strong> {{ resume.personal_info.email }}</p>
+            <p><strong>LinkedIn:</strong> <a href="https://{{ resume.personal_info.linkedin }}">{{ resume.personal_info.linkedin }}</a></p>
+        </section>
+
+        <section id="education" class="resume-section">
+            <h2>Education</h2>
+            {% for edu in resume.education %}
+            <p><strong>{{ edu.school }}, {{ edu.location }}</strong><br>
+            {{ edu.period }}<br>
+            Degree: {{ edu.degree }}<br>
+            GPA: {{ edu.gpa }}<br>
+            SAT: {{ edu.sat }} | PSAT: {{ edu.psat }}<br>
+            AP Scores: {{ edu.ap_scores }}<br>
+            College Credits: {{ edu.college_credits }}<br>
+            Expected Graduation: {{ edu.graduation_year }}</p>
+            {% endfor %}
+        </section>
+
+        <section id="skills" class="resume-section">
+            <h2>Skills</h2>
+            {% for skill in resume.skills %}
+                <h3>{{ skill.category }}</h3>
+                <ul>
+                {% for s in skill.skills %}
+                    <li>{{ s }}</li>
+                {% endfor %}
+                </ul>
+            {% endfor %}
+        </section>
+
+        <section id="experience" class="resume-section">
+            <h2>Experience & Leadership</h2>
+            <ul>
+            {% for exp in resume.experience %}
+                <li>
+                    <h3>{{ exp.title }}</h3>
+                    <p>{{ exp.description }}</p>
+                    {% if exp.link != "" %}
+                    <p><a href="{{ exp.link }}" target="_blank">Website</a></p>
+                    {% endif %}
+                    <p><em>{{ exp.date }}</em></p>
+                </li>
+            {% endfor %}
+            </ul>
+        </section>
+
+        <section id="projects" class="resume-section">
+            <h2>Projects & Activities</h2>
+            <ul>
+            {% for proj in resume.projects %}
+                <li>
+                    <h3>{{ proj.title }}</h3>
+                    <p>{{ proj.description }}</p>
+                    {% if proj.link != "" %}
+                    <p><a href="{{ proj.link }}" target="_blank">Research Link</a></p>
+                    {% endif %}
+                    {% if proj.attachment != "" %}
+                    <p><a href="/static/{{ proj.attachment }}" download>Download {{ proj.attachment }}</a></p>
+                    {% endif %}
+                    <p><em>{{ proj.date }}</em></p>
+                </li>
+            {% endfor %}
+            </ul>
+        </section>
+
+        <section id="awards" class="resume-section">
+            <h2>Awards & Honors</h2>
+            <ul>
+            {% for award in resume.awards %}
+                <li><strong>{{ award.name }}</strong> - {{ award.description }} <em>{{ award.date }}</em></li>
+            {% endfor %}
+            </ul>
+        </section>
+
+        <section id="certifications" class="resume-section">
+            <h2>Certifications</h2>
+            <ul>
+            {% for cert in resume.certifications %}
+                <li><strong>{{ cert.name }}</strong> - {{ cert.description }} <em>{{ cert.date }}</em></li>
+            {% endfor %}
+            </ul>
+        </section>
+    </main>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('data-target');
+            const targetSection = document.getElementById(targetId);
+
+            targetSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+
+            // Update active state
+            navLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Highlight active section on scroll
+    const observerOptions = {
+        root: null,
+        rootMargin: '-50% 0px -50% 0px',
+        threshold: 0
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const targetId = entry.target.id;
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('data-target') === targetId) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    }, observerOptions);
+
+    // Observe all sections
+    document.querySelectorAll('.resume-section').forEach(section => {
+        observer.observe(section);
+    });
+
+    // Set first section as active initially
+    if (navLinks.length > 0) {
+        navLinks[0].classList.add('active');
+    }
+});
+</script>
+{% endblock %}

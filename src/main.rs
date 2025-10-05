@@ -1,17 +1,14 @@
 use axum::{
-    extract::State,
     routing::get,
-    Router, http::StatusCode,
+    Router,
 };
 use tower_http::services::ServeDir;
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
-use moka::future::Cache;
 use std::sync::{Arc, Mutex};
 use tokio::sync::Mutex as TokioMutex;
 
 use crate::logging::init_logging;
 use crate::cache::CacheManager;
-use crate::models::{AppState, VisitRecord};
+use crate::models::AppState;
 use crate::handlers::*;
 
 mod models;
@@ -29,7 +26,7 @@ async fn main() {
 
     // Initialize app state
     let app_state = Arc::new(AppState {
-        cache_manager,
+        cache_manager: Arc::new(cache_manager),
         visits: Arc::new(TokioMutex::new(Vec::new())),
         version: Arc::new(Mutex::new(1)),
     });
@@ -39,6 +36,7 @@ async fn main() {
         .route("/", get(home_handler))
         .route("/achievements", get(achievements_handler))
         .route("/resume", get(resume_handler))
+        .route("/resume2", get(resume2_handler))
         .nest_service("/static", ServeDir::new("static"))
         .with_state(app_state);
 

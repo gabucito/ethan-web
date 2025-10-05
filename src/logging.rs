@@ -1,9 +1,9 @@
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
 pub fn init_logging() {
     tracing_subscriber::registry()
         .with(
-            tracing_subscriber::EnvFilter::try_from_default_env()
+            EnvFilter::try_from_default_env()
                 .unwrap_or_else(|_| "ethan_web=debug,tower_http=debug,axum=trace".into()),
         )
         .with(tracing_subscriber::fmt::layer())

@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}Ethan's Portfolio - Home{% endblock %}
+
+{% block hero %}
+<section class="hero-video">
+    <video id="hero-video" autoplay muted loop class="hero-video-element" preload="metadata" playsinline>
+        <source src="{{ video_mp4 }}" type="video/mp4">
+        <source src="{{ video_aac }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="hero-overlay">
+        <div class="hero-content">
+            <h1 id="hero-title">{{ name }} Cha</h1>
+            <h2 class="hero-subtitle">{{ title }}</h2>
+            <button id="sound-toggle" class="sound-toggle-btn" aria-label="Play video with sound">🔊 Watch with
+                Sound</button>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const video = document.getElementById('hero-video');
+        const soundButton = document.getElementById('sound-toggle');
+
+        if (soundButton) {
+            soundButton.addEventListener('click', function () {
+                if (video.muted) {
+                    video.muted = false;
+                    video.volume = 0.5; // Set reasonable volume
+                    soundButton.textContent = '🔇 Mute';
+                    soundButton.setAttribute('aria-label', 'Mute video');
+                } else {
+                    video.muted = true;
+                    soundButton.textContent = '🔊 Watch with Sound';
+                    soundButton.setAttribute('aria-label', 'Play video with sound');
+                }
+            });
+        }
+
+        // Pause video when not visible (performance)
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        video.play().catch(() => {
+                            // Ignore autoplay errors
+                        });
+                    } else {
+                        video.pause();
+                    }
+                });
+            },
+            { threshold: 0.3 }
+        );
+
+        observer.observe(video);
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<!-- <section class="journey-section">
+    <div class="section-container">
+        <h2>My Journey into Computer Science</h2>
+
+        <p>
+            My fascination with computer science began during my time at Bergen County Academies, where I challenged myself with rigorous coursework in mathematics, physics, and programming. Maintaining a 3.83 GPA while earning perfect AP scores in Computer Science A, Calculus BC, Physics C: Mechanics and Electricity, Physics 1, and Microeconomics, I developed a strong analytical foundation that continues to guide my problem-solving approach.
+        </p>
+
+        <p>
+            What truly ignited my passion was competitive programming. Participating in the American Computer Science League (ACSL) and USA Computing Olympiad (USACO) competitions opened my eyes to the elegance of algorithmic thinking and the satisfaction of optimizing solutions. My dedication to this pursuit resulted in multiple ACSL medals and Platinum division advancement in USACO, accomplishments that not only tested my technical skills but also taught me perseverance and innovative problem-solving.
+        </p>
+
+        <p>
+            As I deepened my technical expertise, I found myself drawn to bridging the gap between theory and real-world application. Proficient in Java and Python, I've built everything from Arduino microcontroller systems to machine learning models. My experience ranges from cloud computing with AWS to developing automated spectrophotometers using Arduino Mega controllers, RGB LEDs, LDR sensors, and 3D printing technology. These projects have taught me that great solutions often require integrating software with hardware in creative ways.
+        </p>
+
+        <p>
+            Leadership became a natural extension of my technical journey. Recognizing the lack of accessible coding education, I founded Codificar Inc., a 501(c)(3) nonprofit organization that teaches Java, Python, and competitive programming to over 30 middle and high school students. This venture has not only given me the opportunity to share my knowledge but has also deepened my understanding of curriculum development and teaching effective programming concepts.
+        </p>
+
+        <p>
+            My commitment to STEM education extends beyond Codificar. As president of Bergen County Academies' Data Science Club, I guide fellow students through workshops on Pandas, NumPy, and data visualization. I also organized Counterspell Bergen, Hack Club's regional high school game jam, which brought together 50+ participants to create and showcase their game development skills over 24 hours.
+        </p>
+
+        <p>
+            Research has been another crucial part of my growth. My peer-reviewed publication in the Journal of International Research explored air quality analysis using Kolmogorov-Zurbenko filtering techniques. This work, combined with publications in JSR Journal, demonstrated the power of computational methods in environmental science. My participation in the Wolfram Summer Research Program allowed me to apply my skills to procedural city generation and urban planning simulation, exploring how computational techniques can enhance real-world design and planning.
+        </p>
+
+        <p>
+            These experiences culminated in a professional opportunity as a technology intern at Chibitek, where I managed cloud services, provided IT support for numerous clients, and learned the practical aspects of maintaining secure, efficient IT infrastructures. This role solidifies my understanding that computer science exists at the intersection of technical expertise, problem-solving, and real-world impact.
+        </p>
+
+        <p>
+            As I prepare for college and beyond, I'm excited to continue this journey - exploring new technologies, mentoring the next generation of programmers, and applying computational thinking to solve meaningful problems. My path has shown me that computer science isn't just about writing code; it's about creating solutions that matter.
+        </p>
+    </div>
+</section> -->
+<article class="cs-journey prose max-w-screen-md mx-auto">
+  <section aria-labelledby="intro">
+    <h1>My Path Into Computer Science</h1>
+    <p class="lead">
+      I grew into computer science by following curiosity, learning with others, and building useful things.
+    </p>
+  </section>
+
+  <section aria-labelledby="start">
+    <h2 id="start">Getting started</h2>
+    <p>
+      I joined the Columbia Science Honors Program on weekends. The classes were challenging, and I learned to be patient with hard ideas. Topics like theoretical computer science and applied math gave me a base I still use.
+    </p>
+    <p>
+      Through USACO and ACSL, I practiced problem solving under time pressure. Choosing the right data structure and naming the invariant became habits. The results mattered less than learning to think clearly.
+    </p>
+  </section>
+
+  <section aria-labelledby="teaching">
+    <h2 id="teaching">Learning by teaching</h2>
+    <p>
+      I founded <strong>Codificar Inc.</strong>, a 501(c)(3) offering free instruction in Java, Python, and competitive programming. I built a tiered curriculum, organized peer tutors, and taught students from middle to high school. Mentoring an ACSL team that won NJ All-Star Senior was a highlight.
+    </p>
+    <p>
+      I also lead our school’s <strong>Data Science Club</strong>. We run workshops on Pandas and NumPy, invite mentors from universities and nonprofits, and host small case studies. My goal is to make data work feel approachable and practical.
+    </p>
+  </section>
+
+  <section aria-labelledby="games">
+    <h2 id="games">Games and game design</h2>
+    <p>
+      I care about games as a way to learn systems and share ideas. I co-founded <strong>Counterspell Bergen</strong>, a regional high school game jam with 50+ participants. We secured local sponsors and shipped a simple event site that Columbia Engineering Outreach later highlighted.
+    </p>
+    <p>
+      I prototype small games and mechanics in my free time. I focus on feedback loops, clarity of objectives, and playtesting with peers. Game design has improved how I structure programs: clear rules, small iterations, and readable code paths.
+    </p>
+  </section>
+
+  <section aria-labelledby="research">
+    <h2 id="research">Research and method</h2>
+    <p>
+      Air quality became my first research area. I used the Kolmogorov–Zurbenko filter to study long-term PM2.5 trends and later applied Conditional Probability Functions to assess local sources in the NY Metro area.
+    </p>
+    <ul>
+      <li><a href="https://www.jsr.org/hs/index.php/path/article/view/4393" rel="noopener">KZ Filter study (JSR)</a></li>
+      <li><a href="https://www.journalresearchhs.org/_files/ugd/ebf144_b1857e9968904942baabed016e618e89.pdf" rel="noopener">CPF study (JIRMPS)</a></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="build">
+    <h2 id="build">Projects</h2>
+    <p>
+      At the Wolfram Summer Research Program, I used Perlin noise to generate city layouts. I also helped build an automated Arduino spectrophotometer with RGB LEDs, an LDR sensor, and a 3D-printed cartridge, plus software for wavelength selection and calibration.
+    </p>
+    <p>
+      I like removing friction for users. <strong>Liquiboard</strong> is an Android keyboard that adapts key borders to a person’s typing pattern using machine learning. For the Congressional App Challenge, I built a simple intermittent-fasting companion and a kid-friendly news summarizer.
+    </p>
+  </section>
+
+  <section aria-labelledby="community">
+    <h2 id="community">Community and service</h2>
+    <p>
+      I lead a student <strong>Capture the Flag</strong> group where we practice ethical hacking, cryptography, and binary exploitation. I also volunteer at Liberty Science Center and MoMath, serve with YCFL, and play drums at my church. These roles keep me focused on people, not just code.
+    </p>
+  </section>
+
+  <section aria-labelledby="ops">
+    <h2 id="ops">Industry experience</h2>
+    <p>
+      As a Technology Intern at <strong>Chibitek</strong> (2025), I helped monitor client systems, resolve network and software issues, handle cloud migrations, and write documentation. I learned that clear runbooks and steady operations are part of good engineering.
+    </p>
+  </section>
+
+  <section aria-labelledby="study">
+    <h2 id="study">Study and structure</h2>
+    <p>
+      I’ve studied linear algebra at Cooper Union and joined a competitive programming camp at Columbia. Certifications like Java SE 8 and PCEP formalized skills. The main value is that each step prepared me for the next one.
+    </p>
+  </section>
+
+  <section aria-labelledby="now-next">
+    <h2 id="now-next">What I’m aiming for</h2>
+    <p>
+      I try to notice problems, model them carefully, and ship small, reliable improvements. I like building with others, documenting what we learn, and leaving things a bit clearer than we found them. Computer science, for me, is steady work with useful results.
+    </p>
+  </section>
+</article>
+
+{% endblock %}
