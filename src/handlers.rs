@@ -28,28 +28,6 @@ pub async fn home_handler(
     Html(rendered)
 }
 
-pub async fn achievements_handler(
-    State(state): State<Arc<AppState>>,
-) -> Html<String> {
-    let key = state.cache_manager.make_key("/achievements");
-    let ip = "127.0.0.1".to_string(); // TODO
-    if let Some(cached) = state.cache_manager.get(&key).await {
-        log_visit(&state, "/achievements", &ip).await;
-        return Html(cached);
-    }
-
-    // Sample data
-    let achievements = vec![
-        // Add more achievements as needed
-    ];
-
-    let template = AchievementsTemplate { achievements };
-    let rendered = template.render().unwrap();
-    state.cache_manager.set(key, rendered.clone()).await;
-    log_visit(&state, "/achievements", &ip).await;
-    Html(rendered)
-}
-
 pub async fn resume_handler(
     State(state): State<Arc<AppState>>,
 ) -> Html<String> {

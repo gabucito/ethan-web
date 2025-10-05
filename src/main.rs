@@ -34,7 +34,6 @@ async fn main() {
     // Build the router
     let app = Router::new()
         .route("/", get(home_handler))
-        .route("/achievements", get(achievements_handler))
         .route("/resume", get(resume_handler))
         .route("/resume2", get(resume2_handler))
         .nest_service("/static", ServeDir::new("static"))
