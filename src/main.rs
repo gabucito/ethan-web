@@ -16,6 +16,8 @@ mod handlers;
 mod logging;
 mod cache;
 
+const STATIC_PATH: &str = concat!(env!("OUT_DIR"), "/static");
+
 #[tokio::main]
 async fn main() {
     // Initialize logging
@@ -39,7 +41,7 @@ async fn main() {
         .route("/", get(home_handler))
         .route("/resume", get(resume_handler))
         .route("/resume2", get(resume2_handler))
-        .nest_service("/static", ServeDir::new(static_path))
+        .nest_service("/static", ServeDir::new(STATIC_PATH))
         .with_state(app_state);
 
     // Start the server
