@@ -27,7 +27,9 @@ async fn main() {
     let cache_manager = CacheManager::new();
 
     // Get the static files directory relative to the executable
-    let static_path = "static";
+    let exe_path = std::env::current_exe().unwrap();
+    let exe_dir = exe_path.parent().unwrap();
+    let static_path = exe_dir.join("static");
 
     // Initialize app state
     let app_state = Arc::new(AppState {
