@@ -1,17 +1,18 @@
 use moka::future::Cache;
-use std::sync::{Arc, Mutex};
 
 pub struct CacheManager {
     cache: Cache<String, String>,
-    version: Arc<Mutex<u64>>,
 }
 
 impl CacheManager {
     pub fn new() -> Self {
-        Self {
-            cache: Cache::new(1000), // max capacity
-            version: Arc::new(Mutex::new(1)),
-        }
+        // Create cache with 1000 max capacity and 1 hour TTL
+        let cache = Cache::builder()
+            .max_capacity(1000)
+            .time_to_live(std::time::Duration::from_secs(3600)) // 1 hour
+            .build();
+        
+        Self { cache }
     }
 
     pub async fn get(&self, key: &str) -> Option<String> {
@@ -22,23 +23,11 @@ impl CacheManager {
         self.cache.insert(key, value).await;
     }
 
-    pub fn bump_version(&self) -> u64 {
-        let mut version = self.version.lock().unwrap();
-        *version += 1;
-        tracing::info!("Cache version bumped to {}", *version);
-        *version
-    }
-
-    pub fn get_version(&self) -> u64 {
-        *self.version.lock().unwrap()
-    }
-
     pub fn make_key(&self, path: &str) -> String {
-        format!("{}:v{}", path, self.get_version())
+        path.to_string()
     }
 
     pub async fn invalidate(&self) {
         self.cache.invalidate_all();
-        self.bump_version();
     }
 }

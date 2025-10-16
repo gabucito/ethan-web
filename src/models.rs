@@ -104,10 +104,9 @@ pub struct MediaImage {
 pub struct AppState {
     pub cache_manager: std::sync::Arc<crate::cache::CacheManager>,
     pub visits: std::sync::Arc<tokio::sync::Mutex<Vec<VisitRecord>>>,
-    pub version: std::sync::Arc<std::sync::Mutex<u64>>,
 }
 
-#[derive(Template)]
+#[derive(Debug, Template)]
 #[template(path = "index.html")]
 pub struct HomeTemplate {
     pub name: String,
@@ -116,32 +115,32 @@ pub struct HomeTemplate {
     pub video_aac: String,
 }
 
-#[derive(Template)]
+#[derive(Debug, Template)]
 #[template(path = "achievements.html")]
 pub struct AchievementsTemplate {
     pub achievements: Vec<Achievement>,
 }
 
-#[derive(Template)]
+#[derive(Debug, Template)]
 #[template(path = "resume.html")]
 pub struct ResumeTemplate {
     pub resume: ResumeItem,
 }
 
-#[derive(Template)]
+#[derive(Debug, Template)]
 #[template(path = "resume2.html")]
 pub struct Resume2Template {
     pub resume: ResumeItem,
 }
 
-#[derive(Template)]
+#[derive(Debug, Template)]
 #[template(path = "media.html")]
 pub struct MediaTemplate {
     pub videos: Vec<MediaVideo>,
     pub images: Vec<MediaImage>,
 }
 
-#[derive(Template)]
+#[derive(Debug, Template)]
 #[template(path = "media_gallery.html")]
 pub struct MediaGalleryTemplate {
     pub images: Vec<MediaImage>,

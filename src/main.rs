@@ -1,5 +1,6 @@
 use axum::{Router, routing::get};
-use std::sync::{Arc, Mutex};
+use std::net::SocketAddr;
+use std::sync::Arc;
 use tokio::sync::Mutex as TokioMutex;
 use tower_http::services::ServeDir;
 
@@ -27,7 +28,6 @@ async fn main() {
     let app_state = Arc::new(AppState {
         cache_manager: Arc::new(cache_manager),
         visits: Arc::new(TokioMutex::new(Vec::new())),
-        version: Arc::new(Mutex::new(1)),
     });
 
     // Build the router
@@ -41,7 +41,11 @@ async fn main() {
         .with_state(app_state);
 
     // Start the server
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
-    tracing::info!("Server running on http://0.0.0.0:3000");
-    axum::serve(listener, app).await.unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3001")
+        .await
+        .expect("Failed to bind to address 0.0.0.0:3001");
+    tracing::info!("Server running on http://0.0.0.0:3001");
+    if let Err(e) = axum::serve(listener, app.into_make_service_with_connect_info::<SocketAddr>()).await {
+        tracing::error!("Server error: {}", e);
+    }
 }
