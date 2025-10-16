@@ -1,14 +1,45 @@
-use axum::{
-    extract::State,
-    response::Html,
+use crate::models::{
+    Achievement, AppState, Award, Certification, Education, HomeTemplate, MediaGalleryTemplate,
+    MediaImage, MediaSource, MediaTemplate, MediaVideo, PersonalInfo, Project, Resume2Template,
+    ResumeTemplate, Skill,
 };
 use askama_axum::Template;
-use crate::models::{AppState, HomeTemplate, AchievementsTemplate, ResumeTemplate, Resume2Template, Achievement, Education, Skill, PersonalInfo, Project, Award, Certification, ResumeItem};
+use axum::{extract::State, response::Html};
 use std::sync::Arc;
 
-pub async fn home_handler(
-    State(state): State<Arc<AppState>>,
-) -> Html<String> {
+fn featured_media_videos() -> Vec<MediaVideo> {
+    vec![MediaVideo {
+        title: "Portfolio Highlight Reel".to_string(),
+        description: "Quick overview showcasing recent projects and accomplishments.".to_string(),
+        sources: vec![
+            MediaSource {
+                src: "/static/output.mp4".to_string(),
+                mime: "video/mp4".to_string(),
+            },
+            MediaSource {
+                src: "/static/output_aac.mp4".to_string(),
+                mime: "video/mp4".to_string(),
+            },
+        ],
+    }]
+}
+
+fn featured_media_images() -> Vec<MediaImage> {
+    vec![
+        MediaImage {
+            title: "Robotics Showcase".to_string(),
+            description: "Demonstration from the regional robotics invitational.".to_string(),
+            src: "/static/media/robotics.svg".to_string(),
+        },
+        MediaImage {
+            title: "STEM Expo Booth".to_string(),
+            description: "Poster session highlighting LiDAR research project.".to_string(),
+            src: "/static/media/stem-expo.svg".to_string(),
+        },
+    ]
+}
+
+pub async fn home_handler(State(state): State<Arc<AppState>>) -> Html<String> {
     let key = state.cache_manager.make_key("/");
     let ip = "127.0.0.1".to_string(); // TODO: get from request
     if let Some(cached) = state.cache_manager.get(&key).await {
@@ -28,9 +59,42 @@ pub async fn home_handler(
     Html(rendered)
 }
 
-pub async fn resume_handler(
-    State(state): State<Arc<AppState>>,
-) -> Html<String> {
+pub async fn media_handler(State(state): State<Arc<AppState>>) -> Html<String> {
+    let key = state.cache_manager.make_key("/media");
+    let ip = "127.0.0.1".to_string(); // TODO: extract from request metadata
+    if let Some(cached) = state.cache_manager.get(&key).await {
+        log_visit(&state, "/media", &ip).await;
+        return Html(cached);
+    }
+
+    let videos = featured_media_videos();
+    let images = featured_media_images();
+
+    let template = MediaTemplate { videos, images };
+    let rendered = template.render().unwrap();
+    state.cache_manager.set(key, rendered.clone()).await;
+    log_visit(&state, "/media", &ip).await;
+    Html(rendered)
+}
+
+pub async fn media_gallery_handler(State(state): State<Arc<AppState>>) -> Html<String> {
+    let key = state.cache_manager.make_key("/media/gallery");
+    let ip = "127.0.0.1".to_string(); // TODO: extract from request metadata
+    if let Some(cached) = state.cache_manager.get(&key).await {
+        log_visit(&state, "/media/gallery", &ip).await;
+        return Html(cached);
+    }
+
+    let images = featured_media_images();
+
+    let template = MediaGalleryTemplate { images };
+    let rendered = template.render().unwrap();
+    state.cache_manager.set(key, rendered.clone()).await;
+    log_visit(&state, "/media/gallery", &ip).await;
+    Html(rendered)
+}
+
+pub async fn resume_handler(State(state): State<Arc<AppState>>) -> Html<String> {
     let key = state.cache_manager.make_key("/resume");
     let ip = "127.0.0.1".to_string(); // TODO
     if let Some(cached) = state.cache_manager.get(&key).await {
@@ -229,9 +293,7 @@ pub async fn resume_handler(
     Html(rendered)
 }
 
-pub async fn resume2_handler(
-    State(state): State<Arc<AppState>>,
-) -> Html<String> {
+pub async fn resume2_handler(State(state): State<Arc<AppState>>) -> Html<String> {
     let key = state.cache_manager.make_key("/resume2");
     let ip = "127.0.0.1".to_string();
     if let Some(cached) = state.cache_manager.get(&key).await {

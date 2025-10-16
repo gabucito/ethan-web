@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}Interactive Media Gallery | Ethan's Portfolio{% endblock %}
+
+{% block content %}
+<section class="media-section">
+    <header class="section-header">
+        <h1>Interactive Media Gallery</h1>
+        <p>Tap on any image to view it in detail and explore highlights from recent events.</p>
+    </header>
+
+    <div class="media-grid">
+        {% for image in images %}
+        <article class="media-card media-card--clickable">
+            <button
+                type="button"
+                class="media-button"
+                data-src="{{ image.src }}"
+                data-title="{{ image.title }}"
+                data-description="{{ image.description }}"
+                data-index="{{ loop.index0 }}"
+            >
+                <img src="{{ image.src }}" alt="{{ image.title }}">
+            </button>
+            <div class="media-card__body">
+                <h3>{{ image.title }}</h3>
+                <p>{{ image.description }}</p>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+
+<div id="galleryOverlay" class="gallery-overlay" hidden>
+    <div class="gallery-overlay__content" role="dialog" aria-modal="true" aria-labelledby="galleryOverlayTitle">
+        <button type="button" class="gallery-overlay__close" aria-label="Close gallery view">&times;</button>
+        <button type="button" class="gallery-overlay__nav gallery-overlay__nav--prev" aria-label="View previous">
+            &#10094;
+        </button>
+        <img src="" alt="" class="gallery-overlay__media" id="galleryOverlayImage">
+        <button type="button" class="gallery-overlay__nav gallery-overlay__nav--next" aria-label="View next">
+            &#10095;
+        </button>
+        <div class="gallery-overlay__body">
+            <h3 id="galleryOverlayTitle" class="gallery-overlay__title"></h3>
+            <p id="galleryOverlayDescription" class="gallery-overlay__description"></p>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const overlay = document.getElementById('galleryOverlay');
+    const overlayImage = document.getElementById('galleryOverlayImage');
+    const overlayTitle = document.getElementById('galleryOverlayTitle');
+    const overlayDescription = document.getElementById('galleryOverlayDescription');
+    const closeButton = overlay.querySelector('.gallery-overlay__close');
+    const prevButton = overlay.querySelector('.gallery-overlay__nav--prev');
+    const nextButton = overlay.querySelector('.gallery-overlay__nav--next');
+    const triggers = Array.from(document.querySelectorAll('.media-button'));
+    let lastTrigger = null;
+    let activeIndex = 0;
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    if (triggers.length === 0) {
+        return;
+    }
+
+    const updateOverlayContent = (index) => {
+        const trigger = triggers[index];
+        overlayImage.src = trigger.dataset.src;
+        overlayImage.alt = trigger.dataset.title;
+        overlayTitle.textContent = trigger.dataset.title;
+        overlayDescription.textContent = trigger.dataset.description;
+        activeIndex = index;
+        const hasMultiple = triggers.length > 1;
+        prevButton.disabled = !hasMultiple;
+        nextButton.disabled = !hasMultiple;
+    };
+
+    const openOverlay = (trigger) => {
+        const index = Number(trigger.dataset.index);
+        updateOverlayContent(index);
+        overlay.hidden = false;
+        document.body.classList.add('is-modal-open');
+        lastTrigger = trigger;
+        if (!nextButton.disabled) {
+            nextButton.focus();
+        } else {
+            closeButton.focus();
+        }
+    };
+
+    const closeOverlay = () => {
+        if (overlay.hidden) {
+            return;
+        }
+        overlay.hidden = true;
+        document.body.classList.remove('is-modal-open');
+        overlayImage.src = '';
+        if (lastTrigger) {
+            lastTrigger.focus();
+            lastTrigger = null;
+        }
+    };
+
+    const showNext = () => {
+        if (triggers.length <= 1) {
+            return;
+        }
+        const nextIndex = (activeIndex + 1) % triggers.length;
+        updateOverlayContent(nextIndex);
+    };
+
+    const showPrev = () => {
+        if (triggers.length <= 1) {
+            return;
+        }
+        const prevIndex = (activeIndex - 1 + triggers.length) % triggers.length;
+        updateOverlayContent(prevIndex);
+    };
+
+    triggers.forEach((button) => {
+        button.addEventListener('click', () => openOverlay(button));
+        button.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                openOverlay(button);
+            }
+        });
+    });
+
+    closeButton.addEventListener('click', closeOverlay);
+    prevButton.addEventListener('click', showPrev);
+    nextButton.addEventListener('click', showNext);
+
+    overlay.addEventListener('click', (event) => {
+        if (event.target === overlay) {
+            closeOverlay();
+        }
+    });
+
+    overlay.addEventListener('touchstart', (event) => {
+        if (event.touches.length === 1) {
+            touchStartX = event.touches[0].clientX;
+        }
+    }, { passive: true });
+
+    overlay.addEventListener('touchend', (event) => {
+        if (touchStartX === 0) {
+            return;
+        }
+        touchEndX = event.changedTouches[0].clientX;
+        const delta = touchEndX - touchStartX;
+        touchStartX = 0;
+        touchEndX = 0;
+        if (Math.abs(delta) < 40) {
+            return; // Ignore small swipes
+        }
+        if (delta < 0) {
+            showNext();
+        } else {
+            showPrev();
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (overlay.hidden) {
+            return;
+        }
+        if (event.key === 'Escape') {
+            closeOverlay();
+        } else if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            showNext();
+        } else if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            showPrev();
+        }
+    });
+});
+</script>
+{% endblock %}

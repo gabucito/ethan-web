@@ -1,6 +1,6 @@
 use askama::Template;
-use serde::{Serialize, Deserialize};
 use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct VisitRecord {
@@ -80,6 +80,26 @@ pub struct ResumeItem {
     pub certifications: Vec<Certification>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct MediaSource {
+    pub src: String,
+    pub mime: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct MediaVideo {
+    pub title: String,
+    pub description: String,
+    pub sources: Vec<MediaSource>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct MediaImage {
+    pub title: String,
+    pub description: String,
+    pub src: String,
+}
+
 #[derive(Clone)]
 pub struct AppState {
     pub cache_manager: std::sync::Arc<crate::cache::CacheManager>,
@@ -112,4 +132,17 @@ pub struct ResumeTemplate {
 #[template(path = "resume2.html")]
 pub struct Resume2Template {
     pub resume: ResumeItem,
+}
+
+#[derive(Template)]
+#[template(path = "media.html")]
+pub struct MediaTemplate {
+    pub videos: Vec<MediaVideo>,
+    pub images: Vec<MediaImage>,
+}
+
+#[derive(Template)]
+#[template(path = "media_gallery.html")]
+pub struct MediaGalleryTemplate {
+    pub images: Vec<MediaImage>,
 }

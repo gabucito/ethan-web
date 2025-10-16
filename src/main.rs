@@ -1,20 +1,17 @@
-use axum::{
-    routing::get,
-    Router,
-};
-use tower_http::services::ServeDir;
+use axum::{Router, routing::get};
 use std::sync::{Arc, Mutex};
 use tokio::sync::Mutex as TokioMutex;
+use tower_http::services::ServeDir;
 
-use crate::logging::init_logging;
 use crate::cache::CacheManager;
-use crate::models::AppState;
 use crate::handlers::*;
+use crate::logging::init_logging;
+use crate::models::AppState;
 
-mod models;
+mod cache;
 mod handlers;
 mod logging;
-mod cache;
+mod models;
 
 const STATIC_PATH: &str = concat!(env!("OUT_DIR"), "/static");
 
@@ -25,11 +22,6 @@ async fn main() {
 
     // Initialize cache
     let cache_manager = CacheManager::new();
-
-    // Get the static files directory relative to the executable
-    let exe_path = std::env::current_exe().unwrap();
-    let exe_dir = exe_path.parent().unwrap();
-    let static_path = exe_dir.join("static");
 
     // Initialize app state
     let app_state = Arc::new(AppState {
@@ -43,6 +35,8 @@ async fn main() {
         .route("/", get(home_handler))
         .route("/resume", get(resume_handler))
         .route("/resume2", get(resume2_handler))
+        .route("/media", get(media_handler))
+        .route("/media/gallery", get(media_gallery_handler))
         .nest_service("/static", ServeDir::new(STATIC_PATH))
         .with_state(app_state);
 

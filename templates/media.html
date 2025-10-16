@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Media Gallery | Ethan's Portfolio{% endblock %}
+
+{% block content %}
+<section class="media-section">
+    <header class="section-header">
+        <h1>Media Gallery</h1>
+        <p>A curated collection of videos and photos from recent projects, events, and competitions.</p>
+    </header>
+
+    <section class="media-group">
+        <h2>Videos</h2>
+        <div class="media-grid">
+            {% for video in videos %}
+            <article class="media-card">
+                <video controls preload="metadata">
+                    {% for source in video.sources %}
+                    <source src="{{ source.src }}" type="{{ source.mime }}">
+                    {% endfor %}
+                    Your browser does not support the video tag.
+                </video>
+                <div class="media-card__body">
+                    <h3>{{ video.title }}</h3>
+                    <p>{{ video.description }}</p>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="media-group">
+        <h2>Images</h2>
+        <div class="media-grid">
+            {% for image in images %}
+            <article class="media-card">
+                <img src="{{ image.src }}" alt="{{ image.title }}">
+                <div class="media-card__body">
+                    <h3>{{ image.title }}</h3>
+                    <p>{{ image.description }}</p>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+</section>
+{% endblock %}

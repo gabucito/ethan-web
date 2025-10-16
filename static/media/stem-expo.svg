@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400">
+    <defs>
+        <linearGradient id="expo-bg" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#0f755d"/>
+            <stop offset="100%" stop-color="#35a28b"/>
+        </linearGradient>
+    </defs>
+    <rect width="600" height="400" fill="url(#expo-bg)"/>
+    <g fill="none" stroke="#e8f6f1" stroke-width="4" stroke-linecap="round">
+        <path d="M120 280 C180 160, 420 160, 480 280"/>
+        <circle cx="300" cy="180" r="60"/>
+        <line x1="300" y1="120" x2="300" y2="60"/>
+        <line x1="255" y1="195" x2="210" y2="240"/>
+        <line x1="345" y1="195" x2="390" y2="240"/>
+    </g>
+    <g fill="#e8f6f1">
+        <circle cx="300" cy="60" r="12"/>
+        <circle cx="210" cy="240" r="10"/>
+        <circle cx="390" cy="240" r="10"/>
+    </g>
+    <text x="300" y="340" font-size="40" font-family="Arial, Helvetica, sans-serif" text-anchor="middle" fill="#e8f6f1">
+        STEM Expo Booth
+    </text>
+</svg>
