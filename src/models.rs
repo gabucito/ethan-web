@@ -145,3 +145,16 @@ pub struct MediaTemplate {
 pub struct MediaGalleryTemplate {
     pub images: Vec<MediaImage>,
 }
+
+#[derive(Debug, Template)]
+#[template(path = "resume3.html")]
+pub struct Resume3Template {
+    pub resume: ResumeItem,
+}
+
+#[derive(Debug, Template)]
+#[template(path = "media3.html")]
+pub struct Media3Template {
+    pub videos: Vec<MediaVideo>,
+    pub images: Vec<MediaImage>,
+}

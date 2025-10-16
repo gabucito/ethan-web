@@ -1,0 +1,37 @@
+   Compiling ethan-web v0.1.0 (/home/gabucito/rust/ethan-web)
+warning: method `invalidate` is never used
+  --> src/cache.rs:30:18
+   |
+7  | impl CacheManager {
+   | ----------------- method in this implementation
+...
+30 |     pub async fn invalidate(&self) {
+   |                  ^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` on by default
+
+warning: struct `AchievementsTemplate` is never constructed
+   --> src/models.rs:120:12
+    |
+120 | pub struct AchievementsTemplate {
+    |            ^^^^^^^^^^^^^^^^^^^^
+
+warning: `ethan-web` (bin "ethan-web") generated 2 warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 6.87s
+     Running `target/debug/ethan-web`
+[2m2025-10-16T02:02:26.773503Z[0m [32m INFO[0m [2methan_web[0m[2m:[0m Server running on http://0.0.0.0:3002
+[2m2025-10-16T02:02:30.953945Z[0m [35mTRACE[0m [2maxum::serve[0m[2m:[0m connection 127.0.0.1:33878 accepted
+[2m2025-10-16T02:02:30.954139Z[0m [35mTRACE[0m [2maxum::serve[0m[2m:[0m connection 127.0.0.1:33890 accepted
+[2m2025-10-16T02:02:30.954888Z[0m [32m INFO[0m [2methan_web::handlers[0m[2m:[0m Logged visit to /resume from 127.0.0.1
+[2m2025-10-16T02:02:31.216672Z[0m [35mTRACE[0m [2maxum::serve[0m[2m:[0m connection 127.0.0.1:33904 accepted
+[2m2025-10-16T02:02:32.123975Z[0m [32m INFO[0m [2methan_web::handlers[0m[2m:[0m Logged visit to / from 127.0.0.1
+[2m2025-10-16T02:02:32.930819Z[0m [32m INFO[0m [2methan_web::handlers[0m[2m:[0m Logged visit to /resume from 127.0.0.1
+[2m2025-10-16T02:02:33.530279Z[0m [32m INFO[0m [2methan_web::handlers[0m[2m:[0m Logged visit to /resume2 from 127.0.0.1
+[2m2025-10-16T02:02:34.070780Z[0m [32m INFO[0m [2methan_web::handlers[0m[2m:[0m Logged visit to /resume3 from 127.0.0.1
+[2m2025-10-16T02:02:43.043368Z[0m [32m INFO[0m [2methan_web::handlers[0m[2m:[0m Logged visit to /media from 127.0.0.1
+[2m2025-10-16T02:02:43.508810Z[0m [32m INFO[0m [2methan_web::handlers[0m[2m:[0m Logged visit to /media/gallery from 127.0.0.1
+[2m2025-10-16T02:02:44.163098Z[0m [32m INFO[0m [2methan_web::handlers[0m[2m:[0m Logged visit to /media3 from 127.0.0.1
+[2m2025-10-16T02:02:57.284271Z[0m [35mTRACE[0m [2maxum::serve[0m[2m:[0m connection 127.0.0.1:40898 accepted
+[2m2025-10-16T02:02:57.298510Z[0m [32m INFO[0m [2methan_web::handlers[0m[2m:[0m Logged visit to /resume3 from 127.0.0.1
+[2m2025-10-16T02:03:32.183977Z[0m [35mTRACE[0m [2maxum::serve[0m[2m:[0m connection 127.0.0.1:34826 accepted
+[2m2025-10-16T02:03:32.204257Z[0m [32m INFO[0m [2methan_web::handlers[0m[2m:[0m Logged visit to /media3 from 127.0.0.1

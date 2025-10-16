@@ -1,7 +1,7 @@
 use crate::models::{
-    Achievement, AppState, Award, Certification, Education, HomeTemplate, MediaGalleryTemplate,
+    Achievement, AppState, Award, Certification, Education, HomeTemplate, Media3Template, MediaGalleryTemplate,
     MediaImage, MediaSource, MediaTemplate, MediaVideo, PersonalInfo, Project, Resume2Template,
-    ResumeTemplate, ResumeItem, Skill,
+    Resume3Template, ResumeTemplate, ResumeItem, Skill,
 };
 use axum::{
     extract::{ConnectInfo, State},
@@ -309,6 +309,43 @@ pub async fn resume2_handler(
 
     let template = Resume2Template { resume };
     render_cached_page(&state, "/resume2", &ip, &template).await
+}
+
+pub async fn resume3_handler(
+    State(state): State<Arc<AppState>>,
+    ConnectInfo(addr): ConnectInfo<SocketAddr>,
+) -> Html<String> {
+    let ip = addr.ip().to_string();
+    let resume = create_resume_data();
+
+    // Modify resume for resume3 - remove some details for a cleaner look
+    let mut resume = resume.clone();
+    
+    // For resume3, maybe show a more compact version
+    for exp in &mut resume.experience {
+        if exp.title.contains("Published") {
+            // Truncate long descriptions
+            if exp.description.chars().count() > 150 {
+                let truncated = exp.description.chars().take(150).collect::<String>();
+                exp.description = format!("{}...", truncated);
+            }
+        }
+    }
+
+    let template = Resume3Template { resume };
+    render_cached_page(&state, "/resume3", &ip, &template).await
+}
+
+pub async fn media3_handler(
+    State(state): State<Arc<AppState>>,
+    ConnectInfo(addr): ConnectInfo<SocketAddr>,
+) -> Html<String> {
+    let ip = addr.ip().to_string();
+    let videos = featured_media_videos();
+    let images = featured_media_images();
+
+    let template = Media3Template { videos, images };
+    render_cached_page(&state, "/media3", &ip, &template).await
 }
 
 async fn log_visit(state: &Arc<AppState>, page: &str, ip: &str) {

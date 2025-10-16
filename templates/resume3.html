@@ -1,0 +1,592 @@
+{% extends "base.html" %}
+
+{% block title %}{{ resume.personal_info.name }} - Professional Portfolio{% endblock %}
+
+{% block hero %}
+<div class="hero">
+    <div class="hero-content">
+        <h1>{{ resume.personal_info.name }}</h1>
+        <p>Aspiring Computer Science Student</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="controls">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search skills, experiences, projects...">
+        </div>
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="education">Education</button>
+            <button class="filter-btn" data-filter="experience">Experience</button>
+            <button class="filter-btn" data-filter="project">Projects</button>
+            <button class="filter-btn" data-filter="award">Awards</button>
+        </div>
+    </div>
+    
+    <div class="content-grid">
+        <div class="main-content">
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Education</h2>
+                </div>
+                {% for edu in resume.education %}
+                <div class="item" data-category="education" data-search="{{ edu.school }} {{ edu.degree }} {{ edu.location }} {{ edu.gpa }}">
+                    <div class="item-header">
+                        <div class="item-title">{{ edu.school }}</div>
+                        <div class="item-date">{{ edu.period }}</div>
+                    </div>
+                    <div class="item-subtitle">{{ edu.degree }} • {{ edu.location }}</div>
+                    <div class="gpa-sat">
+                        <div>GPA: {{ edu.gpa }}</div>
+                        <div>SAT: {{ edu.sat }}</div>
+                        <div>PSAT: {{ edu.psat }}</div>
+                    </div>
+                    {% if !edu.ap_scores.is_empty() %}
+                    <div class="item-description"><strong>AP Scores:</strong> {{ edu.ap_scores }}</div>
+                    {% endif %}
+                    {% if !edu.college_credits.is_empty() %}
+                    <div class="item-description"><strong>College Credits:</strong> {{ edu.college_credits }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </section>
+            
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Experience</h2>
+                </div>
+                {% for exp in resume.experience %}
+                <div class="item" data-category="experience" data-search="{{ exp.title }} {{ exp.description }} {{ exp.date }}">
+                    <div class="item-header">
+                        <div class="item-title">{{ exp.title }}</div>
+                        <div class="item-date">{{ exp.date }}</div>
+                    </div>
+                    <div class="item-description">{{ exp.description }}</div>
+                    {% if !exp.link.is_empty() %}
+                    <a href="{{ exp.link }}" target="_blank" class="action-btn">
+                        <i class="fas fa-external-link-alt"></i> View Details
+                    </a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </section>
+            
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Projects</h2>
+                </div>
+                {% for project in resume.projects %}
+                <div class="item" data-category="project" data-search="{{ project.title }} {{ project.description }} {{ project.date }}">
+                    <div class="item-header">
+                        <div class="item-title">{{ project.title }}</div>
+                        <div class="item-date">{{ project.date }}</div>
+                    </div>
+                    <div class="item-description">{{ project.description }}</div>
+                    {% if !project.tags.is_empty() %}
+                    <div class="skill-cloud">
+                        {% for tag in project.tags %}
+                        <span class="skill-tag">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <div style="margin-top: 10px;">
+                        {% if !project.link.is_empty() %}
+                        <a href="{{ project.link }}" target="_blank" class="action-btn" style="margin-right: 10px;">
+                            <i class="fas fa-external-link-alt"></i> Project Link
+                        </a>
+                        {% endif %}
+                        {% if !project.attachment.is_empty() %}
+                        <a href="/static/{{ project.attachment }}" class="action-btn">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </section>
+        </div>
+        
+        <div class="sidebar">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Skills</h2>
+                </div>
+                {% for skill in resume.skills %}
+                <div class="skill-category">
+                    <h3>{{ skill.category }}</h3>
+                    <div class="skill-list">
+                        {% for s in skill.skills %}
+                        <div class="skill-item" data-skill="{{ s }}">{{ s }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="stats-card">
+                <h3 class="section-title">Quick Stats</h3>
+                <div class="stat-item">
+                    <span class="stat-label">Education Level:</span>
+                    <span class="stat-value">{{ resume.education.len() }} Institutions</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Experience:</span>
+                    <span class="stat-value">{{ resume.experience.len() }} Positions</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Projects:</span>
+                    <span class="stat-value">{{ resume.projects.len() }} Projects</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Awards:</span>
+                    <span class="stat-value">{{ resume.awards.len() }} Awards</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Certifications:</span>
+                    <span class="stat-value">{{ resume.certifications.len() }} Certs</span>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Recent Awards</h2>
+                </div>
+                <div class="achievement-grid">
+                    {% for award in resume.awards.iter().take(5) %}
+                    <div class="achievement-item" data-category="award" data-search="{{ award.name }} {{ award.description }} {{ award.date }}">
+                        <div class="achievement-title">{{ award.name }}</div>
+                        {% if !award.description.is_empty() %}
+                        <div class="item-description">{{ award.description }}</div>
+                        {% endif %}
+                        <div class="achievement-date">{{ award.date }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const items = document.querySelectorAll('.item');
+        
+        items.forEach(item => {
+            const searchContent = item.getAttribute('data-search').toLowerCase();
+            if (searchTerm === '' || searchContent.includes(searchTerm)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+    
+    // Filter functionality
+    document.querySelectorAll('.filter-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            const filter = this.getAttribute('data-filter');
+            const items = document.querySelectorAll('.item');
+            
+            items.forEach(item => {
+                const category = item.getAttribute('data-category');
+                
+                if (filter === 'all' || category === filter) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+    
+    // Skill-based search
+    document.querySelectorAll('.skill-item').forEach(tag => {
+        tag.addEventListener('click', function() {
+            const skill = this.getAttribute('data-skill');
+            document.getElementById('searchInput').value = skill;
+            
+            const event = new Event('input', { bubbles: true });
+            document.getElementById('searchInput').dispatchEvent(event);
+        });
+    });
+</script>
+
+<style>
+    :root {
+        --primary: #1a56db;
+        --secondary: #0e2e6e;
+        --accent: #0f766e;
+        --dark: #1f2937;
+        --light: #f9fafb;
+        --gray: #6b7280;
+        --light-gray: #e5e7eb;
+        --white: #ffffff;
+        --card-bg: #ffffff;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --transition: all 0.3s ease;
+    }
+    
+    .hero {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 40px 20px;
+        text-align: center;
+        margin: 20px 0;
+        border-radius: 12px;
+    }
+    
+    .hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+    
+    .hero p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+    }
+    
+    .controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    
+    .search-box {
+        flex: 1;
+        min-width: 300px;
+    }
+    
+    .search-box input {
+        width: 100%;
+        padding: 12px 20px;
+        border: 2px solid var(--light-gray);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: var(--transition);
+        background: var(--white);
+    }
+    
+    .search-box input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.1);
+    }
+    
+    .filters {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+        background: var(--white);
+        border: 2px solid var(--light-gray);
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: var(--transition);
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+    
+    .filter-btn.active, .filter-btn:hover {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+    
+    .content-grid {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 30px;
+    }
+    
+    .main-content {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .section {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--light-gray);
+    }
+    
+    .section-header {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+        color: var(--secondary);
+        font-weight: 600;
+        position: relative;
+        padding-left: 15px;
+    }
+    
+    .section-title::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 25px;
+        background: var(--primary);
+        border-radius: 2px;
+    }
+    
+    .item {
+        margin-bottom: 20px;
+        padding: 20px;
+        border-radius: 8px;
+        background: var(--light);
+        transition: var(--transition);
+        border-left: 3px solid var(--primary);
+    }
+    
+    .item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    .item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 10px;
+    }
+    
+    .item-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--dark);
+    }
+    
+    .item-date {
+        color: var(--gray);
+        font-weight: 500;
+        white-space: nowrap;
+        margin-left: 15px;
+        font-size: 0.9rem;
+    }
+    
+    .item-subtitle {
+        color: var(--secondary);
+        font-weight: 500;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+    
+    .item-description {
+        color: var(--gray);
+        margin-bottom: 12px;
+        line-height: 1.6;
+    }
+    
+    .skill-cloud {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 15px;
+    }
+    
+    .skill-tag {
+        background: var(--primary);
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+    
+    .gpa-sat {
+        display: flex;
+        gap: 15px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+    }
+    
+    .gpa-sat div {
+        background: var(--primary);
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+    
+    .action-btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: var(--transition);
+        font-size: 0.9rem;
+        margin-top: 10px;
+    }
+    
+    .action-btn:hover {
+        background: var(--secondary);
+    }
+    
+    .skill-category {
+        margin-bottom: 20px;
+    }
+    
+    .skill-category h3 {
+        color: var(--secondary);
+        margin-bottom: 12px;
+        font-size: 1.1rem;
+        border-bottom: 1px solid var(--light-gray);
+        padding-bottom: 8px;
+    }
+    
+    .skill-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .skill-item {
+        background: var(--light);
+        color: var(--dark);
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        border: 1px solid var(--light-gray);
+        cursor: pointer;
+    }
+    
+    .stats-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--light-gray);
+    }
+    
+    .stat-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--light-gray);
+    }
+    
+    .stat-item:last-child {
+        border-bottom: none;
+    }
+    
+    .stat-label {
+        color: var(--gray);
+    }
+    
+    .stat-value {
+        font-weight: 600;
+        color: var(--dark);
+    }
+    
+    .achievement-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .achievement-item {
+        padding: 15px;
+        border-radius: 8px;
+        background: var(--light);
+        border-left: 3px solid var(--accent);
+    }
+    
+    .achievement-title {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 5px;
+    }
+    
+    .achievement-date {
+        color: var(--gray);
+        font-size: 0.85rem;
+    }
+    
+    .progress-bar {
+        height: 6px;
+        background: var(--light-gray);
+        border-radius: 3px;
+        margin-top: 8px;
+        overflow: hidden;
+    }
+    
+    .progress {
+        height: 100%;
+        background: var(--primary);
+        border-radius: 3px;
+    }
+    
+    @media (max-width: 992px) {
+        .content-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .hero h1 {
+            font-size: 2rem;
+        }
+        
+        .controls {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .search-box {
+            min-width: auto;
+        }
+        
+        .item-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+    }
+</style>
+{% endblock %}

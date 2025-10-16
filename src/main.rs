@@ -35,16 +35,18 @@ async fn main() {
         .route("/", get(home_handler))
         .route("/resume", get(resume_handler))
         .route("/resume2", get(resume2_handler))
+        .route("/resume3", get(handlers::resume3_handler))
         .route("/media", get(media_handler))
         .route("/media/gallery", get(media_gallery_handler))
+        .route("/media3", get(handlers::media3_handler))
         .nest_service("/static", ServeDir::new(STATIC_PATH))
         .with_state(app_state);
 
     // Start the server
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3001")
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3002")
         .await
-        .expect("Failed to bind to address 0.0.0.0:3001");
-    tracing::info!("Server running on http://0.0.0.0:3001");
+        .expect("Failed to bind to address 0.0.0.0:3002");
+    tracing::info!("Server running on http://0.0.0.0:3002");
     if let Err(e) = axum::serve(listener, app.into_make_service_with_connect_info::<SocketAddr>()).await {
         tracing::error!("Server error: {}", e);
     }
