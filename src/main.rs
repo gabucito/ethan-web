@@ -43,10 +43,10 @@ async fn main() {
         .with_state(app_state);
 
     // Start the server
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3002")
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
         .await
-        .expect("Failed to bind to address 0.0.0.0:3002");
-    tracing::info!("Server running on http://0.0.0.0:3002");
+        .expect("Failed to bind to address 0.0.0.0:3000");
+    tracing::info!("Server running on http://0.0.0.0:3000");
     if let Err(e) = axum::serve(listener, app.into_make_service_with_connect_info::<SocketAddr>()).await {
         tracing::error!("Server error: {}", e);
     }
