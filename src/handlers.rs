@@ -13,7 +13,7 @@ use axum::{
 use std::net::SocketAddr;
 use std::sync::Arc;
 
-const SITE_BASE: &str = "https://ethancha.dev";
+const SITE_BASE: &str = "";
 
 fn slugify(input: &str) -> String {
     let mut slug = String::new();
@@ -72,7 +72,12 @@ fn achievement_hero(title: &str) -> (Option<&'static str>, Option<&'static str>)
             Some("/static/media/images/orchestra.jpg"),
             Some("Ethan Cha studying advanced mathematics within a collegiate cohort"),
         ),
-        "Technology Intern at Chibitek" => (None, None),
+        "Technology Intern at Chibitek" => (
+            Some("/static/media/images/counterspell.jpg"),
+            Some(
+                "Counterspell robotics workbench showcasing Ethan Cha's hands-on hardware experience",
+            ),
+        ),
         _ => (None, None),
     }
 }
@@ -106,6 +111,14 @@ fn project_hero(title: &str) -> (Option<&'static str>, Option<&'static str>) {
         "Columbia Competitive Programming Camp - Participant" => (
             Some("/static/media/images/counterspell.jpg"),
             Some("Students collaborating on algorithmic problems during programming camp"),
+        ),
+        "Tennis - Junior Varsity Captain" => (
+            Some("/static/media/images/counterspell.jpg"),
+            Some("Ethan Cha coaching teammates in a collaborative competitive setting"),
+        ),
+        "Rock Climbing - Competitive Youth Team Member" => (
+            Some("/static/media/images/nhs2.jpg"),
+            Some("Ethan Cha building strength and focus through competitive training"),
         ),
         _ => (None, None),
     }
