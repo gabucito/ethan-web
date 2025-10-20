@@ -1,16 +1,121 @@
 {% extends "base.html" %}
 
 {% block title %}Achievements{% endblock %}
+{% block meta_description %}Track the awards, honors, and competitive milestones Ethan Cha has earned across academics, research, service, and technology competitions.{% endblock %}
+{% block meta_keywords %}Ethan Cha achievements, awards, honors, ACSL, USACO, STEM recognition{% endblock %}
+{% block og_title %}Achievements | Ethan Cha Portfolio{% endblock %}
+{% block og_description %}From ACSL victories to national service honors, explore the accolades that highlight Ethan Cha's dedication to STEM and community leadership.{% endblock %}
+{% block og_image %}https://ethancha.dev/static/media/images/vfw.jpg{% endblock %}
+{% block og_image_alt %}Ethan Cha receiving recognition at the VFW Voice of Democracy ceremony{% endblock %}
+{% block og_url %}https://ethancha.dev/achievements{% endblock %}
+{% block twitter_title %}Achievements | Ethan Cha Portfolio{% endblock %}
+{% block twitter_description %}From ACSL victories to national service honors, explore the accolades that highlight Ethan Cha's dedication to STEM and community leadership.{% endblock %}
+{% block twitter_image %}https://ethancha.dev/static/media/images/vfw.jpg{% endblock %}
+{% block twitter_image_alt %}Ethan Cha receiving recognition at the VFW Voice of Democracy ceremony{% endblock %}
+{% block twitter_url %}https://ethancha.dev/achievements{% endblock %}
+{% block canonical_url %}https://ethancha.dev/achievements{% endblock %}
 
 {% block content %}
-<h1>My Achievements</h1>
-<ul>
-{% for achievement in achievements %}
-    <li>
-        <h2>{{ achievement.title }}</h2>
-        <p>{{ achievement.description }}</p>
-        <p><em>{{ achievement.date }}</em></p>
-    </li>
-{% endfor %}
-</ul>
+<section class="achievements-index">
+    <header class="achievements-index__header">
+        <h1>Milestones &amp; Achievements</h1>
+        <p>Dive into the initiatives, competitions, and programs that shaped Ethan’s momentum in STEM and community leadership.</p>
+    </header>
+
+    <div class="achievements-grid">
+        {% for item in achievements %}
+        <article class="achievement-card">
+            <h2><a href="/achievements/{{ item.slug }}">{{ item.achievement.title }}</a></h2>
+            {% if item.achievement.date != "" %}
+            <p class="achievement-card__meta">{{ item.achievement.date }}</p>
+            {% endif %}
+            <p>{{ item.achievement.description }}</p>
+            <a href="/achievements/{{ item.slug }}" class="achievement-card__cta">Explore this achievement →</a>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+
+<style>
+    .achievements-index {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 4rem;
+    }
+
+    .achievements-index__header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+
+    .achievements-index__header h1 {
+        font-size: clamp(2.3rem, 5vw, 3rem);
+        margin-bottom: 0.75rem;
+    }
+
+    .achievements-index__header p {
+        color: #475569;
+        font-size: 1.05rem;
+        max-width: 640px;
+        margin: 0 auto;
+    }
+
+    .achievements-grid {
+        display: grid;
+        gap: 1.75rem;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .achievement-card {
+        background: #ffffff;
+        border-radius: 1.1rem;
+        padding: 1.75rem;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+        display: grid;
+        gap: 0.9rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .achievement-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 30px rgba(15, 23, 42, 0.12);
+    }
+
+    .achievement-card h2 {
+        margin: 0;
+        font-size: 1.35rem;
+    }
+
+    .achievement-card h2 a {
+        text-decoration: none;
+        color: #1f2937;
+    }
+
+    .achievement-card h2 a:hover {
+        color: #2563eb;
+    }
+
+    .achievement-card__meta {
+        font-size: 0.9rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .achievement-card p {
+        color: #334155;
+    }
+
+    .achievement-card__cta {
+        font-weight: 600;
+        color: #2563eb;
+        text-decoration: none;
+        margin-top: auto;
+    }
+
+    .achievement-card__cta:hover {
+        text-decoration: underline;
+    }
+</style>
 {% endblock %}

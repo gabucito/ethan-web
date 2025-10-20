@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Projects | Ethan's Portfolio{% endblock %}
+{% block meta_description %}Browse Ethan Cha’s signature projects—from procedural city generation to Arduino hardware builds and community-led technology initiatives.{% endblock %}
+{% block meta_keywords %}Ethan Cha projects, STEM projects, Arduino spectrophotometer, procedural generation, community tech{% endblock %}
+{% block og_title %}Projects | Ethan Cha Portfolio{% endblock %}
+{% block og_description %}Explore Ethan Cha’s portfolio of technical builds, research explorations, and leadership initiatives with dedicated deep-dive pages.{% endblock %}
+{% block og_image %}https://ethancha.dev/static/media/images/codificar.jpg{% endblock %}
+{% block og_image_alt %}Ethan Cha collaborating with students during a Codificar technology workshop{% endblock %}
+{% block og_url %}https://ethancha.dev/projects{% endblock %}
+{% block twitter_title %}Projects | Ethan Cha Portfolio{% endblock %}
+{% block twitter_description %}Explore Ethan Cha’s portfolio of technical builds, research explorations, and leadership initiatives with dedicated deep-dive pages.{% endblock %}
+{% block twitter_image %}https://ethancha.dev/static/media/images/codificar.jpg{% endblock %}
+{% block twitter_image_alt %}Ethan Cha collaborating with students during a Codificar technology workshop{% endblock %}
+{% block twitter_url %}https://ethancha.dev/projects{% endblock %}
+{% block canonical_url %}https://ethancha.dev/projects{% endblock %}
+
+{% block content %}
+<section class="projects-index">
+    <header class="projects-index__header">
+        <h1>Signature Projects</h1>
+        <p>Each project captures a different dimension of Ethan’s curiosity—engineering, research, design, and community impact.</p>
+    </header>
+
+    <div class="projects-grid">
+        {% for item in projects %}
+        <article class="project-card">
+            <h2><a href="/projects/{{ item.slug }}">{{ item.project.title }}</a></h2>
+            {% if item.project.date != "" %}
+            <p class="project-card__meta">{{ item.project.date }}</p>
+            {% endif %}
+            <p>{{ item.project.description }}</p>
+            {% for tag in item.project.tags %}
+                {% if loop.first %}<ul class="project-card__tags">{% endif %}
+                <li>{{ tag }}</li>
+                {% if loop.last %}</ul>{% endif %}
+            {% endfor %}
+            <a class="project-card__cta" href="/projects/{{ item.slug }}">Dive into the project →</a>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+
+<style>
+    .projects-index {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 4rem;
+    }
+
+    .projects-index__header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+
+    .projects-index__header h1 {
+        font-size: clamp(2.3rem, 5vw, 3rem);
+        margin-bottom: 0.75rem;
+    }
+
+    .projects-index__header p {
+        color: #475569;
+        font-size: 1.05rem;
+        max-width: 640px;
+        margin: 0 auto;
+    }
+
+    .projects-grid {
+        display: grid;
+        gap: 1.75rem;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .project-card {
+        background: #ffffff;
+        border-radius: 1.1rem;
+        padding: 1.75rem;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+        display: grid;
+        gap: 0.9rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .project-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 30px rgba(15, 23, 42, 0.12);
+    }
+
+    .project-card h2 {
+        margin: 0;
+        font-size: 1.35rem;
+    }
+
+    .project-card h2 a {
+        text-decoration: none;
+        color: #1f2937;
+    }
+
+    .project-card h2 a:hover {
+        color: #2563eb;
+    }
+
+    .project-card__meta {
+        font-size: 0.9rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .project-card__tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    .project-card__tags li {
+        background: #eff6ff;
+        color: #1d4ed8;
+        border-radius: 999px;
+        padding: 0.35rem 0.75rem;
+        font-size: 0.8rem;
+        letter-spacing: 0.03em;
+    }
+
+    .project-card__cta {
+        font-weight: 600;
+        color: #2563eb;
+        text-decoration: none;
+        margin-top: auto;
+    }
+
+    .project-card__cta:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}

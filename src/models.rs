@@ -55,6 +55,18 @@ pub struct Project {
     pub tags: Vec<String>,
 }
 
+#[derive(Clone, Debug)]
+pub struct AchievementListItem {
+    pub achievement: Achievement,
+    pub slug: String,
+}
+
+#[derive(Clone, Debug)]
+pub struct ProjectListItem {
+    pub project: Project,
+    pub slug: String,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Award {
     pub name: String,
@@ -151,7 +163,13 @@ pub struct HomeTemplate {
 #[derive(Debug, Template)]
 #[template(path = "achievements.html")]
 pub struct AchievementsTemplate {
-    pub achievements: Vec<Achievement>,
+    pub achievements: Vec<AchievementListItem>,
+}
+
+#[derive(Debug, Template)]
+#[template(path = "projects.html")]
+pub struct ProjectsTemplate {
+    pub projects: Vec<ProjectListItem>,
 }
 
 #[derive(Debug, Template)]
@@ -177,6 +195,34 @@ pub struct MediaTemplate {
 #[template(path = "media_gallery.html")]
 pub struct MediaGalleryTemplate {
     pub images: Vec<MediaImage>,
+}
+
+#[derive(Debug, Template)]
+#[template(path = "achievement_detail.html")]
+pub struct AchievementDetailTemplate {
+    pub achievement: Achievement,
+    pub slug: String,
+    pub page_url: String,
+    pub hero_image: String,
+    pub hero_alt: String,
+    pub has_hero_image: bool,
+    pub og_image: String,
+    pub og_image_alt: String,
+    pub keywords: Vec<String>,
+}
+
+#[derive(Debug, Template)]
+#[template(path = "project_detail.html")]
+pub struct ProjectDetailTemplate {
+    pub project: Project,
+    pub slug: String,
+    pub page_url: String,
+    pub hero_image: String,
+    pub hero_alt: String,
+    pub has_hero_image: bool,
+    pub og_image: String,
+    pub og_image_alt: String,
+    pub keywords: Vec<String>,
 }
 
 #[derive(Debug, Template)]

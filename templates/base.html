@@ -3,6 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Ethan Cha">
+    <meta name="description" content="{% block meta_description %}Discover Ethan Cha's portfolio: robotics, research, community leadership, and multimedia highlights showcasing innovation and impact.{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}Ethan Cha, computer science student, robotics, research, leadership, Codificar, Counterspell{% endblock %}">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:site_name" content="Ethan Cha Portfolio">
+    <meta property="og:title" content="{% block og_title %}Ethan's Portfolio{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Discover Ethan Cha's portfolio: robotics, research, community leadership, and multimedia highlights showcasing innovation and impact.{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}https://ethancha.dev/static/media/images/codificar.jpg{% endblock %}">
+    <meta property="og:image:alt" content="{% block og_image_alt %}Ethan Cha mentoring students through Codificar programming workshops{% endblock %}">
+    <meta property="og:url" content="{% block og_url %}https://ethancha.dev{% endblock %}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}Ethan's Portfolio{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Discover Ethan Cha's portfolio: robotics, research, community leadership, and multimedia highlights showcasing innovation and impact.{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}https://ethancha.dev/static/media/images/codificar.jpg{% endblock %}">
+    <meta name="twitter:image:alt" content="{% block twitter_image_alt %}Ethan Cha mentoring students during a Codificar workshop{% endblock %}">
+    <meta name="twitter:url" content="{% block twitter_url %}https://ethancha.dev{% endblock %}">
+    <link rel="canonical" href="{% block canonical_url %}https://ethancha.dev{% endblock %}">
     <link rel="stylesheet" href="/static/styles.css">
     <script>
         function toggleMenu() {
@@ -11,12 +28,27 @@
         }
     </script>
     <title>{% block title %}Ethan's Portfolio{% endblock %}</title>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Ethan Cha",
+        "url": "https://ethancha.dev",
+        "jobTitle": "Aspiring Computer Science Student",
+        "description": "Student technologist focused on robotics, data science, community mentorship, and multimedia storytelling.",
+        "sameAs": [
+            "https://www.linkedin.com/in/ethan-cha-67639730b"
+        ]
+    }
+    </script>
 </head>
 <body>
     <header>
         <nav>
             <button class="menu-toggle" onclick="toggleMenu()">☰</button>
             <a href="/">Home</a>
+            <a href="/achievements">Achievements</a>
+            <a href="/projects">Projects</a>
             <a href="/resume">Resume</a>
             <a href="/resume2">Resume2</a>
             <a href="/resume3">Resume3</a>

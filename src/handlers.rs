@@ -1,15 +1,137 @@
 use crate::models::{
-    Achievement, AppState, Award, Certification, Education, HomeTemplate, Media3Template,
-    MediaExperience, MediaExperienceHighlight, MediaExperiencesTemplate, MediaGalleryTemplate,
-    MediaImage, MediaSource, MediaStorylineTemplate, MediaTemplate, MediaTimelineEntry, MediaVideo,
-    PersonalInfo, Project, Resume2Template, Resume3Template, ResumeItem, ResumeTemplate, Skill,
+    Achievement, AchievementDetailTemplate, AchievementListItem, AchievementsTemplate, AppState,
+    Award, Certification, Education, HomeTemplate, Media3Template, MediaExperience,
+    MediaExperienceHighlight, MediaExperiencesTemplate, MediaGalleryTemplate, MediaImage,
+    MediaSource, MediaStorylineTemplate, MediaTemplate, MediaTimelineEntry, MediaVideo,
+    PersonalInfo, Project, ProjectDetailTemplate, ProjectListItem, ProjectsTemplate,
+    Resume2Template, Resume3Template, ResumeItem, ResumeTemplate, Skill,
 };
 use axum::{
-    extract::{ConnectInfo, State},
+    extract::{ConnectInfo, Path, State},
     response::Html,
 };
 use std::net::SocketAddr;
 use std::sync::Arc;
+
+const SITE_BASE: &str = "https://ethancha.dev";
+
+fn slugify(input: &str) -> String {
+    let mut slug = String::new();
+    let mut prev_dash = false;
+
+    for ch in input.chars() {
+        if ch.is_ascii_alphanumeric() {
+            slug.push(ch.to_ascii_lowercase());
+            prev_dash = false;
+        } else if matches!(ch, ' ' | '-' | '_' | '/' | ':' | '&' | ',') {
+            if !prev_dash && !slug.is_empty() {
+                slug.push('-');
+                prev_dash = true;
+            }
+        }
+    }
+
+    if slug.ends_with('-') {
+        slug.pop();
+    }
+
+    if slug.is_empty() {
+        "entry".to_string()
+    } else {
+        slug
+    }
+}
+
+fn achievement_hero(title: &str) -> (Option<&'static str>, Option<&'static str>) {
+    match title {
+        "Codificar Inc. - President & Founder" => (
+            Some("/static/media/images/codificar.jpg"),
+            Some("Ethan Cha mentoring Codificar students during a weekend programming workshop"),
+        ),
+        "Data Science Club - President" => (
+            Some("/static/media/images/codificar.jpg"),
+            Some("Ethan Cha guiding classmates through a student-led data science session"),
+        ),
+        "Counterspell Bergen - Lead Organizer" => (
+            Some("/static/media/images/counterspell.jpg"),
+            Some("Counterspell robotics team collaborating during a build session"),
+        ),
+        "Published Research Paper in Journal of International Research" => (
+            Some("/static/media/images/momath museum.jpg"),
+            Some("Ethan Cha presenting research at the MoMath museum exhibit space"),
+        ),
+        "Published Article in JSR Journal" => (
+            Some("/static/media/images/momath museum.jpg"),
+            Some("Ethan Cha engaging visitors with an interactive research demonstration"),
+        ),
+        "Columbia Science Honors Program - Scholar" => (
+            Some("/static/media/images/orchestra.jpg"),
+            Some("Ethan Cha collaborating with peers during an intensive STEM enrichment program"),
+        ),
+        "Cooper Union STEM - Linear Algebra Scholar" => (
+            Some("/static/media/images/orchestra.jpg"),
+            Some("Ethan Cha studying advanced mathematics within a collegiate cohort"),
+        ),
+        "Technology Intern at Chibitek" => (None, None),
+        _ => (None, None),
+    }
+}
+
+fn project_hero(title: &str) -> (Option<&'static str>, Option<&'static str>) {
+    match title {
+        "Generating Realistic Cities with Perlin Noise" => (
+            Some("/static/media/images/momath museum.jpg"),
+            Some("Procedural city generation visuals presented during a STEM showcase"),
+        ),
+        "Developing an Automated Spectrophotometer Using Arduino Microcontroller" => (
+            Some("/static/media/images/counterspell.jpg"),
+            Some("Prototype hardware assembled for the Arduino-based spectrophotometer project"),
+        ),
+        "Volunteer Service" => (
+            Some("/static/media/images/nhs2.jpg"),
+            Some("Ethan Cha coordinating community volunteers during an NHS-led initiative"),
+        ),
+        "Capture The Flag (CTF) Club - Leader" => (
+            Some("/static/media/images/counterspell.jpg"),
+            Some("Students collaborating on cybersecurity challenges in a club environment"),
+        ),
+        "Liquiboard: Research and Development of Dynamic Error-Correcting Keyboard App" => (
+            Some("/static/media/images/codificar.jpg"),
+            Some("User testing the adaptive typing experience of the Liquiboard prototype"),
+        ),
+        "Congressional App Challenge" => (
+            Some("/static/media/images/vfw.jpg"),
+            Some("Ethan Cha presenting a civic engagement app during competition judging"),
+        ),
+        "Columbia Competitive Programming Camp - Participant" => (
+            Some("/static/media/images/counterspell.jpg"),
+            Some("Students collaborating on algorithmic problems during programming camp"),
+        ),
+        _ => (None, None),
+    }
+}
+
+fn achievements_list() -> Vec<AchievementListItem> {
+    create_resume_data()
+        .experience
+        .into_iter()
+        .map(|achievement| {
+            let slug = slugify(&achievement.title);
+            AchievementListItem { achievement, slug }
+        })
+        .collect()
+}
+
+fn projects_list() -> Vec<ProjectListItem> {
+    create_resume_data()
+        .projects
+        .into_iter()
+        .map(|project| {
+            let slug = slugify(&project.title);
+            ProjectListItem { project, slug }
+        })
+        .collect()
+}
 
 fn featured_media_videos() -> Vec<MediaVideo> {
     vec![
@@ -471,6 +593,117 @@ pub async fn media_gallery_handler(
 
     let template = MediaGalleryTemplate { images };
     render_cached_page(&state, "/media/gallery", &ip, &template).await
+}
+
+pub async fn achievements_handler(
+    State(state): State<Arc<AppState>>,
+    ConnectInfo(addr): ConnectInfo<SocketAddr>,
+) -> Html<String> {
+    let ip = addr.ip().to_string();
+    let achievements = achievements_list();
+    let template = AchievementsTemplate { achievements };
+    render_cached_page(&state, "/achievements", &ip, &template).await
+}
+
+pub async fn achievement_detail_handler(
+    Path(slug): Path<String>,
+    State(state): State<Arc<AppState>>,
+    ConnectInfo(addr): ConnectInfo<SocketAddr>,
+) -> Html<String> {
+    let ip = addr.ip().to_string();
+
+    if let Some(item) = achievements_list()
+        .into_iter()
+        .find(|entry| entry.slug == slug)
+    {
+        let (hero_image_raw, hero_alt_raw) = achievement_hero(&item.achievement.title);
+        let hero_image_abs = hero_image_raw.map(|path| format!("{}{}", SITE_BASE, path));
+        let hero_image_clone = hero_image_abs.clone();
+        let has_hero_image = hero_image_abs.is_some();
+        let hero_image = hero_image_abs.unwrap_or_default();
+        let hero_alt = hero_alt_raw
+            .map(|alt| alt.to_string())
+            .unwrap_or_else(|| format!("{} highlight", item.achievement.title));
+        let og_image = hero_image_clone
+            .unwrap_or_else(|| format!("{}{}", SITE_BASE, "/static/media/images/codificar.jpg"));
+        let og_image_alt = hero_alt.clone();
+        let mut keywords = vec![
+            item.achievement.title.clone(),
+            "Ethan Cha".to_string(),
+            "Achievement".to_string(),
+        ];
+        keywords.push(item.achievement.date.clone());
+        let page_url = format!("{}/achievements/{}", SITE_BASE, slug);
+        let template = AchievementDetailTemplate {
+            achievement: item.achievement,
+            slug: slug.clone(),
+            page_url,
+            hero_image,
+            hero_alt,
+            has_hero_image,
+            og_image,
+            og_image_alt,
+            keywords,
+        };
+        let cache_path = format!("/achievements/{}", slug);
+        return render_cached_page(&state, &cache_path, &ip, &template).await;
+    }
+
+    Html("<h1>Achievement not found</h1>".to_string())
+}
+
+pub async fn projects_handler(
+    State(state): State<Arc<AppState>>,
+    ConnectInfo(addr): ConnectInfo<SocketAddr>,
+) -> Html<String> {
+    let ip = addr.ip().to_string();
+    let projects = projects_list();
+    let template = ProjectsTemplate { projects };
+    render_cached_page(&state, "/projects", &ip, &template).await
+}
+
+pub async fn project_detail_handler(
+    Path(slug): Path<String>,
+    State(state): State<Arc<AppState>>,
+    ConnectInfo(addr): ConnectInfo<SocketAddr>,
+) -> Html<String> {
+    let ip = addr.ip().to_string();
+
+    if let Some(item) = projects_list().into_iter().find(|entry| entry.slug == slug) {
+        let (hero_image_raw, hero_alt_raw) = project_hero(&item.project.title);
+        let hero_image_abs = hero_image_raw.map(|path| format!("{}{}", SITE_BASE, path));
+        let hero_image_clone = hero_image_abs.clone();
+        let has_hero_image = hero_image_abs.is_some();
+        let hero_image = hero_image_abs.unwrap_or_default();
+        let hero_alt = hero_alt_raw
+            .map(|alt| alt.to_string())
+            .unwrap_or_else(|| format!("{} showcase", item.project.title));
+        let og_image = hero_image_clone
+            .unwrap_or_else(|| format!("{}{}", SITE_BASE, "/static/media/images/counterspell.jpg"));
+        let og_image_alt = hero_alt.clone();
+        let mut keywords = vec![
+            item.project.title.clone(),
+            "Ethan Cha".to_string(),
+            "Project".to_string(),
+        ];
+        keywords.extend(item.project.tags.clone());
+        let page_url = format!("{}/projects/{}", SITE_BASE, slug);
+        let template = ProjectDetailTemplate {
+            project: item.project,
+            slug: slug.clone(),
+            page_url,
+            hero_image,
+            hero_alt,
+            has_hero_image,
+            og_image,
+            og_image_alt,
+            keywords,
+        };
+        let cache_path = format!("/projects/{}", slug);
+        return render_cached_page(&state, &cache_path, &ip, &template).await;
+    }
+
+    Html("<h1>Project not found</h1>".to_string())
 }
 
 pub async fn resume_handler(

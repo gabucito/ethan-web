@@ -33,6 +33,10 @@ async fn main() {
     // Build the router
     let app = Router::new()
         .route("/", get(home_handler))
+        .route("/achievements", get(achievements_handler))
+        .route("/achievements/{slug}", get(achievement_detail_handler))
+        .route("/projects", get(projects_handler))
+        .route("/projects/{slug}", get(project_detail_handler))
         .route("/resume", get(resume_handler))
         .route("/resume2", get(resume2_handler))
         .route("/resume3", get(handlers::resume3_handler))

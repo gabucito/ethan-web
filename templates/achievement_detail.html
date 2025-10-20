@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}{{ achievement.title }} | Achievement | Ethan's Portfolio{% endblock %}
+{% block meta_description %}{{ achievement.description|truncate(160) }}{% endblock %}
+{% block meta_keywords %}{{ keywords|join(", ") }}{% endblock %}
+{% block og_title %}{{ achievement.title }} | Achievement | Ethan Cha Portfolio{% endblock %}
+{% block og_description %}{{ achievement.description|truncate(200) }}{% endblock %}
+{% block og_image %}{{ og_image }}{% endblock %}
+{% block og_image_alt %}{{ og_image_alt }}{% endblock %}
+{% block og_url %}{{ page_url }}{% endblock %}
+{% block twitter_title %}{{ achievement.title }} | Achievement | Ethan Cha Portfolio{% endblock %}
+{% block twitter_description %}{{ achievement.description|truncate(200) }}{% endblock %}
+{% block twitter_image %}{{ og_image }}{% endblock %}
+{% block twitter_image_alt %}{{ og_image_alt }}{% endblock %}
+{% block twitter_url %}{{ page_url }}{% endblock %}
+{% block canonical_url %}{{ page_url }}{% endblock %}
+
+{% block content %}
+<article class="detail-page">
+    <header class="detail-hero">
+        <p class="detail-hero__eyebrow">Achievement</p>
+        <h1>{{ achievement.title }}</h1>
+        <p class="detail-hero__lead">{{ achievement.description }}</p>
+        {% if has_hero_image %}
+        <figure class="detail-hero__media">
+            <img src="{{ hero_image }}" alt="{{ hero_alt }}">
+        </figure>
+        {% endif %}
+    </header>
+
+    <section class="detail-summary">
+        <div class="detail-summary__card">
+            <h2>Impact Snapshot</h2>
+            <dl>
+                <div>
+                    <dt>Timeline</dt>
+                    <dd>{{ achievement.date }}</dd>
+                </div>
+                {% if achievement.link != "" %}
+                <div>
+                    <dt>External Link</dt>
+                    <dd><a href="{{ achievement.link }}" target="_blank" rel="noopener">Explore source material</a></dd>
+                </div>
+                {% endif %}
+            </dl>
+        </div>
+
+        <div class="detail-summary__body">
+            <h2>Why it matters</h2>
+            <p>{{ achievement.description }}</p>
+            <p class="detail-summary__cta">
+                <a href="/achievements" aria-label="Back to achievements index">← Back to all achievements</a>
+            </p>
+        </div>
+    </section>
+</article>
+
+<style>
+    .detail-page {
+        padding: 3.5rem 1.5rem 4rem;
+        max-width: 960px;
+        margin: 0 auto;
+    }
+
+    .detail-hero {
+        display: grid;
+        gap: 1.5rem;
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+
+    .detail-hero__eyebrow {
+        text-transform: uppercase;
+        letter-spacing: 0.4em;
+        font-size: 0.75rem;
+        color: #64748b;
+    }
+
+    .detail-hero h1 {
+        font-size: clamp(2.2rem, 4vw, 3rem);
+        margin: 0;
+        color: #0f172a;
+    }
+
+    .detail-hero__lead {
+        font-size: 1.08rem;
+        color: #475569;
+        max-width: 720px;
+        margin: 0 auto;
+    }
+
+    .detail-hero__media {
+        margin: 0;
+        border-radius: 1.5rem;
+        overflow: hidden;
+        box-shadow: 0 25px 45px rgba(15, 23, 42, 0.18);
+    }
+
+    .detail-hero__media img {
+        display: block;
+        width: 100%;
+    }
+
+    .detail-summary {
+        display: grid;
+        gap: 2rem;
+        grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+        align-items: start;
+    }
+
+    .detail-summary__card {
+        background: #0f172a;
+        color: #e2e8f0;
+        border-radius: 1.3rem;
+        padding: 2rem 1.75rem;
+        box-shadow: 0 18px 38px rgba(15, 23, 42, 0.3);
+    }
+
+    .detail-summary__card h2 {
+        font-size: 1.2rem;
+        margin-top: 0;
+    }
+
+    .detail-summary__card dl {
+        margin: 1.5rem 0 0;
+        display: grid;
+        gap: 1rem;
+    }
+
+    .detail-summary__card dt {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: rgba(226, 232, 240, 0.75);
+    }
+
+    .detail-summary__card dd {
+        margin: 0.2rem 0 0;
+        font-size: 1rem;
+        color: #f8fafc;
+    }
+
+    .detail-summary__card a {
+        color: #93c5fd;
+        text-decoration: underline;
+    }
+
+    .detail-summary__body h2 {
+        font-size: 1.6rem;
+        margin-top: 0;
+    }
+
+    .detail-summary__body p {
+        color: #334155;
+        line-height: 1.7;
+    }
+
+    .detail-summary__cta {
+        margin-top: 2rem;
+    }
+
+    .detail-summary__cta a {
+        color: #2563eb;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .detail-summary__cta a:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 860px) {
+        .detail-summary {
+            grid-template-columns: 1fr;
+        }
+
+        .detail-summary__card {
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
