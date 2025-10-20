@@ -1,7 +1,8 @@
 use crate::models::{
     Achievement, AppState, Award, Certification, Education, HomeTemplate, Media3Template,
-    MediaGalleryTemplate, MediaImage, MediaSource, MediaTemplate, MediaVideo, PersonalInfo,
-    Project, Resume2Template, Resume3Template, ResumeItem, ResumeTemplate, Skill,
+    MediaExperience, MediaExperienceHighlight, MediaExperiencesTemplate, MediaGalleryTemplate,
+    MediaImage, MediaSource, MediaStorylineTemplate, MediaTemplate, MediaTimelineEntry, MediaVideo,
+    PersonalInfo, Project, Resume2Template, Resume3Template, ResumeItem, ResumeTemplate, Skill,
 };
 use axum::{
     extract::{ConnectInfo, State},
@@ -65,6 +66,139 @@ fn featured_media_videos() -> Vec<MediaVideo> {
                 mime: "video/mp4".to_string(),
             }],
             poster: "/static/media/images/vfw.jpg".to_string(),
+        },
+    ]
+}
+
+fn immersive_media_timeline() -> Vec<MediaTimelineEntry> {
+    vec![
+        MediaTimelineEntry {
+            period: "2022".to_string(),
+            title: "Voice of Democracy Recognition".to_string(),
+            description: "Delivering the award-winning speech at the VFW Voice of Democracy county ceremony and reflecting on civic leadership.".to_string(),
+            media_kind: "video".to_string(),
+            media_src: "/static/media/videos/vfw.mp4".to_string(),
+            poster: Some("/static/media/images/vfw.jpg".to_string()),
+            accent: "#6366F1".to_string(),
+        },
+        MediaTimelineEntry {
+            period: "2023".to_string(),
+            title: "Codificar Launch & Growth".to_string(),
+            description: "Founding Codificar, hosting weekend sessions, and mentoring teams that conquered competitive programming challenges.".to_string(),
+            media_kind: "video".to_string(),
+            media_src: "/static/media/videos/codificar2.mp4".to_string(),
+            poster: Some("/static/media/images/codificar.jpg".to_string()),
+            accent: "#0EA5E9".to_string(),
+        },
+        MediaTimelineEntry {
+            period: "2024".to_string(),
+            title: "Counterspell Robotics Season".to_string(),
+            description: "Designing autonomous routines, refining drivetrain performance, and presenting strategy breakdowns with the Counterspell crew.".to_string(),
+            media_kind: "video".to_string(),
+            media_src: "/static/media/videos/counterspell.mp4".to_string(),
+            poster: Some("/static/media/images/counterspell.jpg".to_string()),
+            accent: "#22C55E".to_string(),
+        },
+        MediaTimelineEntry {
+            period: "2025".to_string(),
+            title: "MoMath Residency Spotlight".to_string(),
+            description: "Showcasing interactive math exhibits at the National Museum of Mathematics alongside researchers and visitors of all ages.".to_string(),
+            media_kind: "image".to_string(),
+            media_src: "/static/media/images/momath museum.jpg".to_string(),
+            poster: None,
+            accent: "#EC4899".to_string(),
+        },
+        MediaTimelineEntry {
+            period: "2025".to_string(),
+            title: "Community Impact with NHS".to_string(),
+            description: "Coordinating National Honor Society outreach events focused on tutoring, service drives, and STEM exposure for local students.".to_string(),
+            media_kind: "image".to_string(),
+            media_src: "/static/media/images/nhs2.jpg".to_string(),
+            poster: None,
+            accent: "#F97316".to_string(),
+        },
+    ]
+}
+
+fn curated_media_experiences() -> Vec<MediaExperience> {
+    vec![
+        MediaExperience {
+            id: "robotics".to_string(),
+            name: "Robotics & Engineering".to_string(),
+            tagline: "Iterate, prototype, and compete with purpose-built robots.".to_string(),
+            description: "Step inside the Counterspell build room to explore the engineering decisions, match strategy, and teamwork that fuel each season.".to_string(),
+            hero_image: "/static/media/images/counterspell.jpg".to_string(),
+            color: "#22C55E".to_string(),
+            highlights: vec![
+                MediaExperienceHighlight {
+                    title: "Season Recap".to_string(),
+                    description: "From CAD mockups to the final autonomous routine, see the progression that carried the Counterspell robot onto the field.".to_string(),
+                    media_kind: "video".to_string(),
+                    media_src: "/static/media/videos/counterspell.mp4".to_string(),
+                    poster: Some("/static/media/images/counterspell.jpg".to_string()),
+                    tags: vec!["CAD".to_string(), "Autonomous".to_string(), "Strategy".to_string()],
+                },
+                MediaExperienceHighlight {
+                    title: "Pit Crew Moments".to_string(),
+                    description: "Rapid-fire adjustments and troubleshooting between matches captured through candid build room snapshots.".to_string(),
+                    media_kind: "image".to_string(),
+                    media_src: "/static/media/images/counterspell.jpg".to_string(),
+                    poster: None,
+                    tags: vec!["Teamwork".to_string(), "Hardware".to_string()],
+                },
+            ],
+        },
+        MediaExperience {
+            id: "community".to_string(),
+            name: "Community & Leadership".to_string(),
+            tagline: "Empower fellow students through mentorship and service.".to_string(),
+            description: "Experience the Codificar classrooms and NHS-led initiatives that bring coding, mentorship, and civic leadership to local communities.".to_string(),
+            hero_image: "/static/media/images/codificar.jpg".to_string(),
+            color: "#2563EB".to_string(),
+            highlights: vec![
+                MediaExperienceHighlight {
+                    title: "Codificar Mentoring".to_string(),
+                    description: "A look at weekend workshops where students tackle algorithms, share breakthroughs, and celebrate their first programs.".to_string(),
+                    media_kind: "video".to_string(),
+                    media_src: "/static/media/videos/cofificar.mp4".to_string(),
+                    poster: Some("/static/media/images/codificar.jpg".to_string()),
+                    tags: vec!["Mentorship".to_string(), "Workshops".to_string()],
+                },
+                MediaExperienceHighlight {
+                    title: "Service in Action".to_string(),
+                    description: "Documenting NHS service events—organizing drives, staffing community stations, and building leadership through outreach.".to_string(),
+                    media_kind: "image".to_string(),
+                    media_src: "/static/media/images/nhs2.jpg".to_string(),
+                    poster: None,
+                    tags: vec!["NHS".to_string(), "Service".to_string()],
+                },
+            ],
+        },
+        MediaExperience {
+            id: "research".to_string(),
+            name: "Research & Creativity".to_string(),
+            tagline: "Blend analytical rigor with artistic storytelling.".to_string(),
+            description: "Navigate interactive exhibits, publications, and performances that highlight Ethan's curiosity-driven research and creative expression.".to_string(),
+            hero_image: "/static/media/images/momath museum.jpg".to_string(),
+            color: "#EC4899".to_string(),
+            highlights: vec![
+                MediaExperienceHighlight {
+                    title: "MoMath Spotlight".to_string(),
+                    description: "Immersive recap from the MoMath residency featuring interactive displays and visitor reactions.".to_string(),
+                    media_kind: "image".to_string(),
+                    media_src: "/static/media/images/momath museum.jpg".to_string(),
+                    poster: None,
+                    tags: vec!["STEM Outreach".to_string(), "Museums".to_string()],
+                },
+                MediaExperienceHighlight {
+                    title: "Voice of Democracy".to_string(),
+                    description: "Award-winning speech capturing civic themes and storytelling craft.".to_string(),
+                    media_kind: "video".to_string(),
+                    media_src: "/static/media/videos/vfw.mp4".to_string(),
+                    poster: Some("/static/media/images/vfw.jpg".to_string()),
+                    tags: vec!["Public Speaking".to_string(), "Storytelling".to_string()],
+                },
+            ],
         },
     ]
 }
@@ -429,6 +563,28 @@ pub async fn media3_handler(
 
     let template = Media3Template { videos, images };
     render_cached_page(&state, "/media3", &ip, &template).await
+}
+
+pub async fn media_storyline_handler(
+    State(state): State<Arc<AppState>>,
+    ConnectInfo(addr): ConnectInfo<SocketAddr>,
+) -> Html<String> {
+    let ip = addr.ip().to_string();
+    let timeline = immersive_media_timeline();
+
+    let template = MediaStorylineTemplate { timeline };
+    render_cached_page(&state, "/media/storyline", &ip, &template).await
+}
+
+pub async fn media_experiences_handler(
+    State(state): State<Arc<AppState>>,
+    ConnectInfo(addr): ConnectInfo<SocketAddr>,
+) -> Html<String> {
+    let ip = addr.ip().to_string();
+    let experiences = curated_media_experiences();
+
+    let template = MediaExperiencesTemplate { experiences };
+    render_cached_page(&state, "/media/experiences", &ip, &template).await
 }
 
 async fn log_visit(state: &Arc<AppState>, page: &str, ip: &str) {

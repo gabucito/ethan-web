@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+
+{% block title %}Immersive Storyline | Ethan's Portfolio{% endblock %}
+
+{% block content %}
+<section class="storyline">
+    <header class="storyline__header">
+        <h1>Immersive Journey</h1>
+        <p>Scroll through the milestones that shaped Ethan's path&mdash;each moment blending media, narrative, and impact.</p>
+    </header>
+
+    <div class="storyline__rail">
+        <div class="storyline__progress" id="storylineProgress"></div>
+        {% for entry in timeline %}
+        <article class="timeline-card" data-accent="{{ entry.accent }}">
+            <div class="timeline-card__marker" style="background: {{ entry.accent }};"></div>
+            <div class="timeline-card__media">
+                {% if entry.media_kind == "video" %}
+                <video controls preload="metadata" {% if let Some(poster) = entry.poster %}poster="{{ poster }}"{% endif %}>
+                    <source src="{{ entry.media_src }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                {% else %}
+                <img src="{{ entry.media_src }}" alt="{{ entry.title }}">
+                {% endif %}
+            </div>
+            <div class="timeline-card__body">
+                <span class="timeline-card__period">{{ entry.period }}</span>
+                <h2>{{ entry.title }}</h2>
+                <p>{{ entry.description }}</p>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const cards = Array.from(document.querySelectorAll('.timeline-card'));
+    const progressBar = document.getElementById('storylineProgress');
+
+    if (cards.length === 0) {
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('timeline-card--visible');
+            }
+        });
+    }, { threshold: 0.35 });
+
+    cards.forEach((card) => observer.observe(card));
+
+    const updateProgress = () => {
+        const rail = document.querySelector('.storyline__rail');
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+        const scrollTop = window.scrollY || window.pageYOffset;
+        const railTop = rail.offsetTop;
+        const railHeight = rail.scrollHeight;
+        const progress = Math.min(Math.max((scrollTop + viewportHeight * 0.6 - railTop) / railHeight, 0), 1);
+        progressBar.style.transform = `scaleY(${progress})`;
+    };
+
+    updateProgress();
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    window.addEventListener('resize', updateProgress);
+});
+</script>
+
+<style>
+    :root {
+        --storyline-bg: #0f172a;
+        --storyline-fg: #f8fafc;
+        --storyline-muted: #94a3b8;
+        --storyline-card-bg: rgba(15, 23, 42, 0.75);
+        --storyline-border: rgba(148, 163, 184, 0.25);
+    }
+
+    .storyline {
+        background: radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.25), transparent 60%),
+                    radial-gradient(circle at 80% 0%, rgba(244, 114, 182, 0.25), transparent 55%),
+                    var(--storyline-bg);
+        color: var(--storyline-fg);
+        padding: 4rem 1.5rem 6rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .storyline::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(180deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.65) 45%, rgba(15, 23, 42, 0.9) 100%);
+    }
+
+    .storyline__header {
+        max-width: 800px;
+        margin: 0 auto 3rem;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    .storyline__header h1 {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+
+    .storyline__header p {
+        font-size: 1.1rem;
+        line-height: 1.7;
+        color: var(--storyline-muted);
+    }
+
+    .storyline__rail {
+        position: relative;
+        margin: 0 auto;
+        max-width: 880px;
+        display: grid;
+        gap: 2.5rem;
+        padding-left: 3rem;
+        z-index: 1;
+    }
+
+    .storyline__progress {
+        position: absolute;
+        left: 1rem;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(148, 163, 184, 0.15));
+        transform-origin: top;
+        transform: scaleY(0);
+        transition: transform 0.4s ease-out;
+    }
+
+    .timeline-card {
+        position: relative;
+        display: grid;
+        gap: 1.5rem;
+        padding: 2rem;
+        background: var(--storyline-card-bg);
+        border: 1px solid var(--storyline-border);
+        border-radius: 1.25rem;
+        box-shadow: 0 20px 45px rgba(15, 23, 42, 0.55);
+        transform: translateY(40px);
+        opacity: 0;
+        transition: transform 0.7s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.6s ease-out;
+    }
+
+    .timeline-card::before {
+        content: "";
+        position: absolute;
+        inset: -1px;
+        border-radius: 1.25rem;
+        padding: 1px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 70%);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+    }
+
+    .timeline-card--visible {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    .timeline-card__marker {
+        position: absolute;
+        left: -2.2rem;
+        top: 2rem;
+        width: 1.1rem;
+        height: 1.1rem;
+        border-radius: 50%;
+        box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.08);
+    }
+
+    .timeline-card__media {
+        overflow: hidden;
+        border-radius: 1rem;
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        background: rgba(15, 23, 42, 0.6);
+    }
+
+    .timeline-card__media video,
+    .timeline-card__media img {
+        width: 100%;
+        display: block;
+        border-radius: inherit;
+    }
+
+    .timeline-card__body {
+        display: grid;
+        gap: 0.75rem;
+    }
+
+    .timeline-card__period {
+        font-size: 0.95rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--storyline-muted);
+        font-weight: 600;
+    }
+
+    .timeline-card__body h2 {
+        font-size: clamp(1.5rem, 3vw, 1.9rem);
+        margin: 0;
+    }
+
+    .timeline-card__body p {
+        color: rgba(226, 232, 240, 0.8);
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    @media (max-width: 768px) {
+        .storyline {
+            padding: 3rem 1rem 4rem;
+        }
+
+        .storyline__rail {
+            padding-left: 2.5rem;
+        }
+
+        .timeline-card {
+            padding: 1.5rem;
+        }
+
+        .timeline-card__marker {
+            left: -1.9rem;
+        }
+    }
+</style>
+{% endblock %}

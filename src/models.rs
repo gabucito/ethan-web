@@ -101,6 +101,38 @@ pub struct MediaImage {
     pub src: String,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct MediaTimelineEntry {
+    pub period: String,
+    pub title: String,
+    pub description: String,
+    pub media_kind: String,
+    pub media_src: String,
+    pub poster: Option<String>,
+    pub accent: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct MediaExperienceHighlight {
+    pub title: String,
+    pub description: String,
+    pub media_kind: String,
+    pub media_src: String,
+    pub poster: Option<String>,
+    pub tags: Vec<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct MediaExperience {
+    pub id: String,
+    pub name: String,
+    pub tagline: String,
+    pub description: String,
+    pub hero_image: String,
+    pub color: String,
+    pub highlights: Vec<MediaExperienceHighlight>,
+}
+
 #[derive(Clone)]
 pub struct AppState {
     pub cache_manager: std::sync::Arc<crate::cache::CacheManager>,
@@ -145,6 +177,18 @@ pub struct MediaTemplate {
 #[template(path = "media_gallery.html")]
 pub struct MediaGalleryTemplate {
     pub images: Vec<MediaImage>,
+}
+
+#[derive(Debug, Template)]
+#[template(path = "media_storyline.html")]
+pub struct MediaStorylineTemplate {
+    pub timeline: Vec<MediaTimelineEntry>,
+}
+
+#[derive(Debug, Template)]
+#[template(path = "media_experiences.html")]
+pub struct MediaExperiencesTemplate {
+    pub experiences: Vec<MediaExperience>,
 }
 
 #[derive(Debug, Template)]

@@ -39,6 +39,8 @@ async fn main() {
         .route("/media", get(media_handler))
         .route("/media/gallery", get(media_gallery_handler))
         .route("/media3", get(handlers::media3_handler))
+        .route("/media/storyline", get(media_storyline_handler))
+        .route("/media/experiences", get(media_experiences_handler))
         .nest_service("/static", ServeDir::new(STATIC_PATH))
         .with_state(app_state);
 
