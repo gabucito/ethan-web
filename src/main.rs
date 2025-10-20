@@ -47,7 +47,12 @@ async fn main() {
         .await
         .expect("Failed to bind to address 0.0.0.0:3000");
     tracing::info!("Server running on http://0.0.0.0:3000");
-    if let Err(e) = axum::serve(listener, app.into_make_service_with_connect_info::<SocketAddr>()).await {
+    if let Err(e) = axum::serve(
+        listener,
+        app.into_make_service_with_connect_info::<SocketAddr>(),
+    )
+    .await
+    {
         tracing::error!("Server error: {}", e);
     }
 }

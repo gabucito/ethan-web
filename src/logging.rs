@@ -2,10 +2,9 @@ use tracing_subscriber::{EnvFilter, layer::SubscriberExt, util::SubscriberInitEx
 
 pub fn init_logging() {
     tracing_subscriber::registry()
-        .with(
-            EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| EnvFilter::try_new("ethan_web=debug,tower_http=debug,axum=trace").unwrap()),
-        )
+        .with(EnvFilter::try_from_default_env().unwrap_or_else(|_| {
+            EnvFilter::try_new("ethan_web=debug,tower_http=debug,axum=trace").unwrap()
+        }))
         .with(tracing_subscriber::fmt::layer())
         .init();
 }

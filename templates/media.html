@@ -14,7 +14,7 @@
         <div class="media-grid">
             {% for video in videos %}
             <article class="media-card">
-                <video controls preload="metadata">
+                <video controls preload="metadata" poster="{{ video.poster }}">
                     {% for source in video.sources %}
                     <source src="{{ source.src }}" type="{{ source.mime }}">
                     {% endfor %}

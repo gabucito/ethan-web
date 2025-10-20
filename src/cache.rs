@@ -11,7 +11,7 @@ impl CacheManager {
             .max_capacity(1000)
             .time_to_live(std::time::Duration::from_secs(3600)) // 1 hour
             .build();
-        
+
         Self { cache }
     }
 

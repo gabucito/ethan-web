@@ -1,7 +1,7 @@
 use crate::models::{
-    Achievement, AppState, Award, Certification, Education, HomeTemplate, Media3Template, MediaGalleryTemplate,
-    MediaImage, MediaSource, MediaTemplate, MediaVideo, PersonalInfo, Project, Resume2Template,
-    Resume3Template, ResumeTemplate, ResumeItem, Skill,
+    Achievement, AppState, Award, Certification, Education, HomeTemplate, Media3Template,
+    MediaGalleryTemplate, MediaImage, MediaSource, MediaTemplate, MediaVideo, PersonalInfo,
+    Project, Resume2Template, Resume3Template, ResumeItem, ResumeTemplate, Skill,
 };
 use axum::{
     extract::{ConnectInfo, State},
@@ -11,33 +11,107 @@ use std::net::SocketAddr;
 use std::sync::Arc;
 
 fn featured_media_videos() -> Vec<MediaVideo> {
-    vec![MediaVideo {
-        title: "Portfolio Highlight Reel".to_string(),
-        description: "Quick overview showcasing recent projects and accomplishments.".to_string(),
-        sources: vec![
-            MediaSource {
-                src: "/static/output.mp4".to_string(),
+    vec![
+        MediaVideo {
+            title: "Codificar Workshop Highlights".to_string(),
+            description: "Snapshots from Codificar's volunteer-led programming sessions with middle school students.".to_string(),
+            sources: vec![MediaSource {
+                src: "/static/media/videos/codificar2.mp4".to_string(),
                 mime: "video/mp4".to_string(),
-            },
-            MediaSource {
-                src: "/static/output_aac.mp4".to_string(),
+            }],
+            poster: "/static/media/images/codificar.jpg".to_string(),
+        },
+        MediaVideo {
+            title: "Codificar Student Spotlight".to_string(),
+            description: "Quick recap featuring Codificar students presenting their coding projects.".to_string(),
+            sources: vec![MediaSource {
+                src: "/static/media/videos/cofificar.mp4".to_string(),
                 mime: "video/mp4".to_string(),
-            },
-        ],
-    }]
+            }],
+            poster: "/static/media/images/codificar.jpg".to_string(),
+        },
+        MediaVideo {
+            title: "Counterspell Robotics Demo".to_string(),
+            description: "On-field footage from the Counterspell robotics build and test sessions.".to_string(),
+            sources: vec![MediaSource {
+                src: "/static/media/videos/counterspell.mp4".to_string(),
+                mime: "video/mp4".to_string(),
+            }],
+            poster: "/static/media/images/counterspell.jpg".to_string(),
+        },
+        MediaVideo {
+            title: "Portfolio Highlight Reel".to_string(),
+            description: "Quick overview showcasing recent projects and accomplishments.".to_string(),
+            sources: vec![MediaSource {
+                src: "/static/media/videos/output.mp4".to_string(),
+                mime: "video/mp4".to_string(),
+            }],
+            poster: "/static/media/images/orchestra.jpg".to_string(),
+        },
+        MediaVideo {
+            title: "Highlight Reel (AAC Mix)".to_string(),
+            description: "Alternate mix of the highlight reel optimized for AAC audio playback.".to_string(),
+            sources: vec![MediaSource {
+                src: "/static/media/videos/output_aac.mp4".to_string(),
+                mime: "video/mp4".to_string(),
+            }],
+            poster: "/static/media/images/orchestra.jpg".to_string(),
+        },
+        MediaVideo {
+            title: "VFW Voice of Democracy".to_string(),
+            description: "Competition speech delivered during the VFW Voice of Democracy event.".to_string(),
+            sources: vec![MediaSource {
+                src: "/static/media/videos/vfw.mp4".to_string(),
+                mime: "video/mp4".to_string(),
+            }],
+            poster: "/static/media/images/vfw.jpg".to_string(),
+        },
+    ]
 }
 
 fn featured_media_images() -> Vec<MediaImage> {
     vec![
         MediaImage {
-            title: "Robotics Showcase".to_string(),
-            description: "Demonstration from the regional robotics invitational.".to_string(),
-            src: "/static/media/robotics.svg".to_string(),
+            title: "Codificar Mentoring Session".to_string(),
+            description: "Teaching foundational Java concepts during a Codificar weekend class."
+                .to_string(),
+            src: "/static/media/images/codificar.jpg".to_string(),
         },
         MediaImage {
-            title: "STEM Expo Booth".to_string(),
-            description: "Poster session highlighting LiDAR research project.".to_string(),
-            src: "/static/media/stem-expo.svg".to_string(),
+            title: "Counterspell Robotics Build".to_string(),
+            description: "Fine tuning the Counterspell robot ahead of competition scrimmages."
+                .to_string(),
+            src: "/static/media/images/counterspell.jpg".to_string(),
+        },
+        MediaImage {
+            title: "MoMath Museum Research Exhibit".to_string(),
+            description: "Presenting interactive math demos during the MoMath museum residency."
+                .to_string(),
+            src: "/static/media/images/momath museum.jpg".to_string(),
+        },
+        MediaImage {
+            title: "National Honor Society Induction".to_string(),
+            description: "Receiving the NHS stole at the chapter induction ceremony.".to_string(),
+            src: "/static/media/images/nhs.jpg".to_string(),
+        },
+        MediaImage {
+            title: "NHS Service Project".to_string(),
+            description: "Collaborating with the NHS team on a community volunteer initiative."
+                .to_string(),
+            src: "/static/media/images/nhs2.jpg".to_string(),
+        },
+        MediaImage {
+            title: "Chamber Orchestra Performance".to_string(),
+            description:
+                "Dress rehearsal with the school chamber orchestra before the spring concert."
+                    .to_string(),
+            src: "/static/media/images/orchestra.jpg".to_string(),
+        },
+        MediaImage {
+            title: "VFW Voice of Democracy Award".to_string(),
+            description: "Honored at the VFW Voice of Democracy ceremony for county recognition."
+                .to_string(),
+            src: "/static/media/images/vfw.jpg".to_string(),
         },
     ]
 }
@@ -236,8 +310,8 @@ pub async fn home_handler(
     let template = HomeTemplate {
         name: "Ethan".to_string(),
         title: "Aspiring Computer Science Student Portfolio".to_string(),
-        video_mp4: "/static/output.mp4".to_string(),
-        video_aac: "/static/output_aac.mp4".to_string(),
+        video_mp4: "/static/media/videos/output.mp4".to_string(),
+        video_aac: "/static/media/videos/output_aac.mp4".to_string(),
     };
     render_cached_page(&state, "/", &ip, &template).await
 }
@@ -274,8 +348,12 @@ pub async fn resume_handler(
 
     // Modify resume to include the additional skill for resume handler
     let mut resume = resume.clone();
-    if let Some(skills) = resume.skills.iter_mut().find(|s| s.category == "Programming Languages")
-        && !skills.skills.contains(&"Dart".to_string()) {
+    if let Some(skills) = resume
+        .skills
+        .iter_mut()
+        .find(|s| s.category == "Programming Languages")
+        && !skills.skills.contains(&"Dart".to_string())
+    {
         skills.skills.push("Dart".to_string());
     }
 
@@ -292,7 +370,11 @@ pub async fn resume2_handler(
 
     // Modify resume to exclude the Dart skill for resume2 handler
     let mut resume = resume.clone();
-    if let Some(skills) = resume.skills.iter_mut().find(|s| s.category == "Programming Languages") {
+    if let Some(skills) = resume
+        .skills
+        .iter_mut()
+        .find(|s| s.category == "Programming Languages")
+    {
         skills.skills.retain(|skill| skill != "Dart");
     }
 
@@ -302,7 +384,8 @@ pub async fn resume2_handler(
             exp.description.push_str(" https://www.journalresearchhs.org/_files/ugd/ebf144_b1857e9968904942baabed016e618e89.pdf");
             exp.link.clear();
         } else if exp.title == "Published Article in JSR Journal" {
-            exp.description.push_str(" https://www.jsr.org/hs/index.php/path/article/view/4393");
+            exp.description
+                .push_str(" https://www.jsr.org/hs/index.php/path/article/view/4393");
             exp.link.clear();
         }
     }
@@ -320,7 +403,7 @@ pub async fn resume3_handler(
 
     // Modify resume for resume3 - remove some details for a cleaner look
     let mut resume = resume.clone();
-    
+
     // For resume3, maybe show a more compact version
     for exp in &mut resume.experience {
         if exp.title.contains("Published") {
@@ -370,7 +453,7 @@ async fn render_cached_page<T: askama::Template + std::fmt::Debug>(
     template: &T,
 ) -> Html<String> {
     let key = state.cache_manager.make_key(path);
-    
+
     if let Some(cached) = state.cache_manager.get(&key).await {
         log_visit(state, path, ip).await;
         return Html(cached);

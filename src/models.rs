@@ -91,6 +91,7 @@ pub struct MediaVideo {
     pub title: String,
     pub description: String,
     pub sources: Vec<MediaSource>,
+    pub poster: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
