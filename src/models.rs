@@ -134,7 +134,7 @@ pub struct AchievementsTemplate {
 pub struct ProjectsTemplate {
     pub projects: Vec<ProjectListItem>,
 }
-//Test
+
 #[derive(Debug, Template)]
 #[template(path = "activities.html")]
 pub struct ActivitiesTemplate {
