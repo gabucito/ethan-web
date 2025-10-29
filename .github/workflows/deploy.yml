@@ -1,0 +1,58 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: ["main"]   # adjust if needed
+
+jobs:
+  build-and-restart:
+    runs-on: self-hosted
+    labels: ["resume","axum"]   # must include a label you set on the runner
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-
+
+      # Sync repo to your live directory (fast & safe)
+      - name: Sync source to /opt/resume/ethan-web
+        run: |
+          rsync -a --delete --exclude target ./ /opt/resume/ethan-web/
+
+      - name: Build (release)
+        working-directory: /opt/resume/ethan-web
+        run: |
+          ~/.cargo/bin/cargo build --release --locked
+
+      # (Optional) copy/rename to a stable path if your binary name differs
+      - name: Ensure binary path matches systemd ExecStart
+        run: |
+          test -x /opt/resume/ethan-web/target/release/ethan-web
+
+      - name: Restart service
+        run: sudo systemctl restart ethan-web
+
+      - name: Health check
+        run: |
+          for i in {1..20}; do
+            curl -fsS http://127.0.0.1:3000/health && exit 0
+            sleep 1
+          done
+          echo "Health check failed" >&2
+          sudo journalctl -u ethan-web --no-pager -n 200
+          exit 1
