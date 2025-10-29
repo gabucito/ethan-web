@@ -40,7 +40,6 @@ async fn main() {
         .route("/projects", get(projects_handler))
         .route("/projects/{slug}", get(project_detail_handler))
         .route("/resume", get(resume_handler))
-        .route("/resume2", get(resume2_handler))
         .nest_service("/static", ServeDir::new(STATIC_PATH))
         .with_state(app_state);
 
