@@ -108,6 +108,31 @@
             </div>
         </div>
 
+        <div class="canvas-section canvas-section-large">
+            <h2 class="section-title">🌱 Activities &amp; Service</h2>
+            <div class="section-content">
+                {% for activity in resume.activities %}
+                <div class="project-item">
+                    <h3 class="project-title">{{ activity.title }}</h3>
+                    <div class="project-date">{{ activity.date }}</div>
+                    <div class="project-description">{{ activity.description }}</div>
+                    {% if activity.tags.len() > 0 %}
+                    <div class="canvas-project-tags">
+                        {% for tag in activity.tags %}
+                        <span class="tech-tag">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% if activity.link != "" %}
+                    <div class="project-links">
+                        <a href="{{ activity.link }}" target="_blank" class="link-button">Learn More</a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
         <div class="canvas-section">
             <h2 class="section-title">🏆 Awards & Honors</h2>
             <div class="section-content">

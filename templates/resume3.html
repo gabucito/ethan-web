@@ -28,13 +28,14 @@
 <div class="container">
     <div class="controls">
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Search skills, experiences, projects...">
+            <input type="text" id="searchInput" placeholder="Search skills, experiences, projects, activities...">
         </div>
         <div class="filters">
             <button class="filter-btn active" data-filter="all">All</button>
             <button class="filter-btn" data-filter="education">Education</button>
             <button class="filter-btn" data-filter="experience">Experience</button>
             <button class="filter-btn" data-filter="project">Projects</button>
+            <button class="filter-btn" data-filter="activity">Activities</button>
             <button class="filter-btn" data-filter="award">Awards</button>
         </div>
     </div>
@@ -120,6 +121,35 @@
                 </div>
                 {% endfor %}
             </section>
+
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Activities</h2>
+                </div>
+                {% for activity in resume.activities %}
+                <div class="item" data-category="activity" data-search="{{ activity.title }} {{ activity.description }} {{ activity.date }}">
+                    <div class="item-header">
+                        <div class="item-title">{{ activity.title }}</div>
+                        <div class="item-date">{{ activity.date }}</div>
+                    </div>
+                    <div class="item-description">{{ activity.description }}</div>
+                    {% if !activity.tags.is_empty() %}
+                    <div class="skill-cloud">
+                        {% for tag in activity.tags %}
+                        <span class="skill-tag">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% if !activity.link.is_empty() %}
+                    <div style="margin-top: 10px;">
+                        <a href="{{ activity.link }}" target="_blank" class="action-btn">
+                            <i class="fas fa-external-link-alt"></i> Learn More
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </section>
         </div>
         
         <div class="sidebar">
@@ -152,6 +182,10 @@
                 <div class="stat-item">
                     <span class="stat-label">Projects:</span>
                     <span class="stat-value">{{ resume.projects.len() }} Projects</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Activities:</span>
+                    <span class="stat-value">{{ resume.activities.len() }} Activities</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-label">Awards:</span>

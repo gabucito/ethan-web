@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Activities{% endblock %}
+{% block meta_description %}Explore Ethan Cha’s sustained activities across community outreach, athletics, and enrichment programs that complement his technical work.{% endblock %}
+{% block meta_keywords %}Ethan Cha activities, community outreach, student leadership, athletics, enrichment{% endblock %}
+{% block og_title %}Activities | Ethan Cha Portfolio{% endblock %}
+{% block og_description %}See how Ethan invests his time outside the classroom — from leading cybersecurity clubs to serving the community and competing in athletics.{% endblock %}
+{% block og_image %}https://ethancha.dev/static/media/images/nhs2.jpg{% endblock %}
+{% block og_image_alt %}Ethan Cha coordinating a National Honor Society community service event{% endblock %}
+{% block og_url %}https://ethancha.dev/activities{% endblock %}
+{% block twitter_title %}Activities | Ethan Cha Portfolio{% endblock %}
+{% block twitter_description %}See how Ethan invests his time outside the classroom — from leading cybersecurity clubs to serving the community and competing in athletics.{% endblock %}
+{% block twitter_image %}https://ethancha.dev/static/media/images/nhs2.jpg{% endblock %}
+{% block twitter_image_alt %}Ethan Cha coordinating a National Honor Society community service event{% endblock %}
+{% block twitter_url %}https://ethancha.dev/activities{% endblock %}
+{% block canonical_url %}https://ethancha.dev/activities{% endblock %}
+
+{% block content %}
+<section class="activities-index">
+    <header class="activities-index__header">
+        <h1>Activities &amp; Community</h1>
+        <p>These ongoing commitments keep Ethan grounded — combining service, leadership, athletics, and enrichment experiences that shape how he collaborates and leads.</p>
+    </header>
+
+    <div class="activities-grid">
+        {% for item in activities %}
+        <article class="activity-card">
+            <h2><a href="/activities/{{ item.slug }}">{{ item.activity.title }}</a></h2>
+            {% if item.activity.date != "" %}
+            <p class="activity-card__meta">{{ item.activity.date }}</p>
+            {% endif %}
+            <p>{{ item.activity.description }}</p>
+            {% if item.activity.tags.len() > 0 %}
+            <ul class="activity-card__tags">
+                {% for tag in item.activity.tags %}
+                <li>{{ tag }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <a href="/activities/{{ item.slug }}" class="activity-card__cta">See how Ethan contributes →</a>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+
+<style>
+    .activities-index {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 4rem;
+    }
+
+    .activities-index__header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+        background: linear-gradient(135deg, #dcfce7, #f0fdf4);
+        border-radius: 1.5rem;
+        padding: 2.25rem 1.5rem;
+        box-shadow: 0 20px 45px rgba(22, 163, 74, 0.18);
+    }
+
+    .activities-index__header h1 {
+        font-size: clamp(2.3rem, 5vw, 3rem);
+        margin-bottom: 0.75rem;
+        color: #0f172a;
+    }
+
+    .activities-index__header p {
+        color: #0f172a;
+        font-size: 1.05rem;
+        max-width: 640px;
+        margin: 0 auto;
+    }
+
+    .activities-grid {
+        display: grid;
+        gap: 1.75rem;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .activity-card {
+        background: #ffffff;
+        color: #0f172a;
+        border-radius: 1.1rem;
+        padding: 1.9rem;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        box-shadow: 0 18px 32px rgba(15, 23, 42, 0.12);
+        display: grid;
+        gap: 1rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .activity-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 26px 42px rgba(15, 23, 42, 0.16);
+    }
+
+    .activity-card h2 {
+        margin: 0;
+        font-size: 1.4rem;
+        color: #0f172a;
+    }
+
+    .activity-card h2 a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .activity-card h2 a:hover {
+        color: #15803d;
+    }
+
+    .activity-card__meta {
+        font-size: 0.9rem;
+        color: #15803d;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-weight: 600;
+    }
+
+    .activity-card__tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    .activity-card__tags li {
+        background: rgba(22, 163, 74, 0.12);
+        color: #15803d;
+        border-radius: 999px;
+        padding: 0.35rem 0.75rem;
+        font-size: 0.8rem;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+    }
+
+    .activity-card__cta {
+        font-weight: 600;
+        color: #15803d;
+        text-decoration: none;
+        margin-top: auto;
+    }
+
+    .activity-card__cta:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}

@@ -24,6 +24,7 @@
             <li><a href="#skills" class="nav-link" data-target="skills">Skills</a></li>
             <li><a href="#experience" class="nav-link" data-target="experience">Experience</a></li>
             <li><a href="#projects" class="nav-link" data-target="projects">Projects</a></li>
+            <li><a href="#activities" class="nav-link" data-target="activities">Activities</a></li>
             <li><a href="#awards" class="nav-link" data-target="awards">Awards</a></li>
             <li><a href="#certifications" class="nav-link" data-target="certifications">Certifications</a></li>
         </ul>
@@ -80,7 +81,7 @@
         </section>
 
         <section id="projects" class="resume-section">
-            <h2>Projects & Activities</h2>
+            <h2>Projects</h2>
             <ul>
             {% for proj in resume.projects %}
                 <li>
@@ -93,6 +94,29 @@
                     <p><a href="/static/{{ proj.attachment }}" download>Download {{ proj.attachment }}</a></p>
                     {% endif %}
                     <p><em>{{ proj.date }}</em></p>
+                </li>
+            {% endfor %}
+            </ul>
+        </section>
+
+        <section id="activities" class="resume-section">
+            <h2>Activities</h2>
+            <ul>
+            {% for activity in resume.activities %}
+                <li>
+                    <h3>{{ activity.title }}</h3>
+                    <p>{{ activity.description }}</p>
+                    {% if activity.link != "" %}
+                    <p><a href="{{ activity.link }}" target="_blank">Explore more</a></p>
+                    {% endif %}
+                    {% if activity.tags.len() > 0 %}
+                    <p>
+                        {% for tag in activity.tags %}
+                        <span>{{ tag }}</span>{% if !loop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                    <p><em>{{ activity.date }}</em></p>
                 </li>
             {% endfor %}
             </ul>

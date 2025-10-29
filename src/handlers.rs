@@ -1,10 +1,8 @@
 use crate::models::{
-    Achievement, AchievementDetailTemplate, AchievementListItem, AchievementsTemplate, AppState,
-    Award, Certification, Education, HomeTemplate, Media3Template, MediaExperience,
-    MediaExperienceHighlight, MediaExperiencesTemplate, MediaGalleryTemplate, MediaImage,
-    MediaSource, MediaStorylineTemplate, MediaTemplate, MediaTimelineEntry, MediaVideo,
-    PersonalInfo, Project, ProjectDetailTemplate, ProjectListItem, ProjectsTemplate,
-    Resume2Template, Resume3Template, ResumeItem, ResumeTemplate, Skill,
+    Achievement, AchievementDetailTemplate, AchievementListItem, AchievementsTemplate, Activity,
+    ActivityDetailTemplate, ActivityListItem, ActivitiesTemplate, AppState, Award, Certification,
+    Education, HomeTemplate, PersonalInfo, Project, ProjectDetailTemplate, ProjectListItem,
+    ProjectsTemplate, Resume2Template, Resume3Template, ResumeItem, ResumeTemplate, Skill,
 };
 use axum::{
     extract::{ConnectInfo, Path, State},
@@ -92,14 +90,6 @@ fn project_hero(title: &str) -> (Option<&'static str>, Option<&'static str>) {
             Some("/static/media/images/counterspell.jpg"),
             Some("Prototype hardware assembled for the Arduino-based spectrophotometer project"),
         ),
-        "Volunteer Service" => (
-            Some("/static/media/images/nhs2.jpg"),
-            Some("Ethan Cha coordinating community volunteers during an NHS-led initiative"),
-        ),
-        "Capture The Flag (CTF) Club - Leader" => (
-            Some("/static/media/images/counterspell.jpg"),
-            Some("Students collaborating on cybersecurity challenges in a club environment"),
-        ),
         "Liquiboard: Research and Development of Dynamic Error-Correcting Keyboard App" => (
             Some("/static/media/images/codificar.jpg"),
             Some("User testing the adaptive typing experience of the Liquiboard prototype"),
@@ -107,18 +97,6 @@ fn project_hero(title: &str) -> (Option<&'static str>, Option<&'static str>) {
         "Congressional App Challenge" => (
             Some("/static/media/images/vfw.jpg"),
             Some("Ethan Cha presenting a civic engagement app during competition judging"),
-        ),
-        "Columbia Competitive Programming Camp - Participant" => (
-            Some("/static/media/images/counterspell.jpg"),
-            Some("Students collaborating on algorithmic problems during programming camp"),
-        ),
-        "Tennis - Junior Varsity Captain" => (
-            Some("/static/media/images/counterspell.jpg"),
-            Some("Ethan Cha coaching teammates in a collaborative competitive setting"),
-        ),
-        "Rock Climbing - Competitive Youth Team Member" => (
-            Some("/static/media/images/nhs2.jpg"),
-            Some("Ethan Cha building strength and focus through competitive training"),
         ),
         _ => (None, None),
     }
@@ -146,243 +124,92 @@ fn projects_list() -> Vec<ProjectListItem> {
         .collect()
 }
 
-fn featured_media_videos() -> Vec<MediaVideo> {
+fn activities_data() -> Vec<Activity> {
     vec![
-        MediaVideo {
-            title: "Codificar Workshop Highlights".to_string(),
-            description: "Snapshots from Codificar's volunteer-led programming sessions with middle school students.".to_string(),
-            sources: vec![MediaSource {
-                src: "/static/media/videos/codificar2.mp4".to_string(),
-                mime: "video/mp4".to_string(),
-            }],
-            poster: "/static/media/images/codificar.jpg".to_string(),
-        },
-        MediaVideo {
-            title: "Codificar Student Spotlight".to_string(),
-            description: "Quick recap featuring Codificar students presenting their coding projects.".to_string(),
-            sources: vec![MediaSource {
-                src: "/static/media/videos/cofificar.mp4".to_string(),
-                mime: "video/mp4".to_string(),
-            }],
-            poster: "/static/media/images/codificar.jpg".to_string(),
-        },
-        MediaVideo {
-            title: "Counterspell Robotics Demo".to_string(),
-            description: "On-field footage from the Counterspell robotics build and test sessions.".to_string(),
-            sources: vec![MediaSource {
-                src: "/static/media/videos/counterspell.mp4".to_string(),
-                mime: "video/mp4".to_string(),
-            }],
-            poster: "/static/media/images/counterspell.jpg".to_string(),
-        },
-        MediaVideo {
-            title: "Portfolio Highlight Reel".to_string(),
-            description: "Quick overview showcasing recent projects and accomplishments.".to_string(),
-            sources: vec![MediaSource {
-                src: "/static/media/videos/output.mp4".to_string(),
-                mime: "video/mp4".to_string(),
-            }],
-            poster: "/static/media/images/orchestra.jpg".to_string(),
-        },
-        MediaVideo {
-            title: "Highlight Reel (AAC Mix)".to_string(),
-            description: "Alternate mix of the highlight reel optimized for AAC audio playback.".to_string(),
-            sources: vec![MediaSource {
-                src: "/static/media/videos/output_aac.mp4".to_string(),
-                mime: "video/mp4".to_string(),
-            }],
-            poster: "/static/media/images/orchestra.jpg".to_string(),
-        },
-        MediaVideo {
-            title: "VFW Voice of Democracy".to_string(),
-            description: "Competition speech delivered during the VFW Voice of Democracy event.".to_string(),
-            sources: vec![MediaSource {
-                src: "/static/media/videos/vfw.mp4".to_string(),
-                mime: "video/mp4".to_string(),
-            }],
-            poster: "/static/media/images/vfw.jpg".to_string(),
-        },
-    ]
-}
-
-fn immersive_media_timeline() -> Vec<MediaTimelineEntry> {
-    vec![
-        MediaTimelineEntry {
-            period: "2022".to_string(),
-            title: "Voice of Democracy Recognition".to_string(),
-            description: "Delivering the award-winning speech at the VFW Voice of Democracy county ceremony and reflecting on civic leadership.".to_string(),
-            media_kind: "video".to_string(),
-            media_src: "/static/media/videos/vfw.mp4".to_string(),
-            poster: Some("/static/media/images/vfw.jpg".to_string()),
-            accent: "#6366F1".to_string(),
-        },
-        MediaTimelineEntry {
-            period: "2023".to_string(),
-            title: "Codificar Launch & Growth".to_string(),
-            description: "Founding Codificar, hosting weekend sessions, and mentoring teams that conquered competitive programming challenges.".to_string(),
-            media_kind: "video".to_string(),
-            media_src: "/static/media/videos/codificar2.mp4".to_string(),
-            poster: Some("/static/media/images/codificar.jpg".to_string()),
-            accent: "#0EA5E9".to_string(),
-        },
-        MediaTimelineEntry {
-            period: "2024".to_string(),
-            title: "Counterspell Robotics Season".to_string(),
-            description: "Designing autonomous routines, refining drivetrain performance, and presenting strategy breakdowns with the Counterspell crew.".to_string(),
-            media_kind: "video".to_string(),
-            media_src: "/static/media/videos/counterspell.mp4".to_string(),
-            poster: Some("/static/media/images/counterspell.jpg".to_string()),
-            accent: "#22C55E".to_string(),
-        },
-        MediaTimelineEntry {
-            period: "2025".to_string(),
-            title: "MoMath Residency Spotlight".to_string(),
-            description: "Showcasing interactive math exhibits at the National Museum of Mathematics alongside researchers and visitors of all ages.".to_string(),
-            media_kind: "image".to_string(),
-            media_src: "/static/media/images/momath museum.jpg".to_string(),
-            poster: None,
-            accent: "#EC4899".to_string(),
-        },
-        MediaTimelineEntry {
-            period: "2025".to_string(),
-            title: "Community Impact with NHS".to_string(),
-            description: "Coordinating National Honor Society outreach events focused on tutoring, service drives, and STEM exposure for local students.".to_string(),
-            media_kind: "image".to_string(),
-            media_src: "/static/media/images/nhs2.jpg".to_string(),
-            poster: None,
-            accent: "#F97316".to_string(),
-        },
-    ]
-}
-
-fn curated_media_experiences() -> Vec<MediaExperience> {
-    vec![
-        MediaExperience {
-            id: "robotics".to_string(),
-            name: "Robotics & Engineering".to_string(),
-            tagline: "Iterate, prototype, and compete with purpose-built robots.".to_string(),
-            description: "Step inside the Counterspell build room to explore the engineering decisions, match strategy, and teamwork that fuel each season.".to_string(),
-            hero_image: "/static/media/images/counterspell.jpg".to_string(),
-            color: "#22C55E".to_string(),
-            highlights: vec![
-                MediaExperienceHighlight {
-                    title: "Season Recap".to_string(),
-                    description: "From CAD mockups to the final autonomous routine, see the progression that carried the Counterspell robot onto the field.".to_string(),
-                    media_kind: "video".to_string(),
-                    media_src: "/static/media/videos/counterspell.mp4".to_string(),
-                    poster: Some("/static/media/images/counterspell.jpg".to_string()),
-                    tags: vec!["CAD".to_string(), "Autonomous".to_string(), "Strategy".to_string()],
-                },
-                MediaExperienceHighlight {
-                    title: "Pit Crew Moments".to_string(),
-                    description: "Rapid-fire adjustments and troubleshooting between matches captured through candid build room snapshots.".to_string(),
-                    media_kind: "image".to_string(),
-                    media_src: "/static/media/images/counterspell.jpg".to_string(),
-                    poster: None,
-                    tags: vec!["Teamwork".to_string(), "Hardware".to_string()],
-                },
+        Activity {
+            title: "Volunteer Service & Community Outreach".to_string(),
+            description: "Liberty Science Center: Facilitated hands-on STEM demos and guided visitors across galleries. MoMath Museum: Led interactive math activities and supported educational programming for families. Youth Council Fort Lee: Coordinated large-scale community events, including the Fort Lee Color Run. Chodae Church: Drummer for the youth praise team supporting weekly services and special events.".to_string(),
+            date: "2019 - Present".to_string(),
+            link: "".to_string(),
+            tags: vec![
+                "Community Impact".to_string(),
+                "STEM Outreach".to_string(),
+                "Leadership".to_string(),
             ],
         },
-        MediaExperience {
-            id: "community".to_string(),
-            name: "Community & Leadership".to_string(),
-            tagline: "Empower fellow students through mentorship and service.".to_string(),
-            description: "Experience the Codificar classrooms and NHS-led initiatives that bring coding, mentorship, and civic leadership to local communities.".to_string(),
-            hero_image: "/static/media/images/codificar.jpg".to_string(),
-            color: "#2563EB".to_string(),
-            highlights: vec![
-                MediaExperienceHighlight {
-                    title: "Codificar Mentoring".to_string(),
-                    description: "A look at weekend workshops where students tackle algorithms, share breakthroughs, and celebrate their first programs.".to_string(),
-                    media_kind: "video".to_string(),
-                    media_src: "/static/media/videos/cofificar.mp4".to_string(),
-                    poster: Some("/static/media/images/codificar.jpg".to_string()),
-                    tags: vec!["Mentorship".to_string(), "Workshops".to_string()],
-                },
-                MediaExperienceHighlight {
-                    title: "Service in Action".to_string(),
-                    description: "Documenting NHS service events—organizing drives, staffing community stations, and building leadership through outreach.".to_string(),
-                    media_kind: "image".to_string(),
-                    media_src: "/static/media/images/nhs2.jpg".to_string(),
-                    poster: None,
-                    tags: vec!["NHS".to_string(), "Service".to_string()],
-                },
+        Activity {
+            title: "Capture The Flag (CTF) Club - Leader".to_string(),
+            description: "Founded a cybersecurity club that practices ethical hacking, cryptography, and binary exploitation. Organized scrimmages, prepared write-ups, and mentored peers ahead of competitive events.".to_string(),
+            date: "2023 - Present".to_string(),
+            link: "".to_string(),
+            tags: vec![
+                "Cybersecurity".to_string(),
+                "Cryptography".to_string(),
+                "Technical Leadership".to_string(),
             ],
         },
-        MediaExperience {
-            id: "research".to_string(),
-            name: "Research & Creativity".to_string(),
-            tagline: "Blend analytical rigor with artistic storytelling.".to_string(),
-            description: "Navigate interactive exhibits, publications, and performances that highlight Ethan's curiosity-driven research and creative expression.".to_string(),
-            hero_image: "/static/media/images/momath museum.jpg".to_string(),
-            color: "#EC4899".to_string(),
-            highlights: vec![
-                MediaExperienceHighlight {
-                    title: "MoMath Spotlight".to_string(),
-                    description: "Immersive recap from the MoMath residency featuring interactive displays and visitor reactions.".to_string(),
-                    media_kind: "image".to_string(),
-                    media_src: "/static/media/images/momath museum.jpg".to_string(),
-                    poster: None,
-                    tags: vec!["STEM Outreach".to_string(), "Museums".to_string()],
-                },
-                MediaExperienceHighlight {
-                    title: "Voice of Democracy".to_string(),
-                    description: "Award-winning speech capturing civic themes and storytelling craft.".to_string(),
-                    media_kind: "video".to_string(),
-                    media_src: "/static/media/videos/vfw.mp4".to_string(),
-                    poster: Some("/static/media/images/vfw.jpg".to_string()),
-                    tags: vec!["Public Speaking".to_string(), "Storytelling".to_string()],
-                },
+        Activity {
+            title: "Tennis - Junior Varsity Captain".to_string(),
+            description: "Coordinated practice plans, led match strategy, and mentored underclassmen for the Bergen County Academies tennis program.".to_string(),
+            date: "2023 - Present".to_string(),
+            link: "".to_string(),
+            tags: vec!["Athletics".to_string(), "Team Leadership".to_string()],
+        },
+        Activity {
+            title: "Rock Climbing - Competitive Youth Team Member".to_string(),
+            description: "Competed in bouldering and sport climbing competitions while training three times a week under professional coaching to refine strength and technique.".to_string(),
+            date: "2021 - Present".to_string(),
+            link: "".to_string(),
+            tags: vec!["Athletics".to_string(), "Discipline".to_string()],
+        },
+        Activity {
+            title: "Columbia Competitive Programming Camp - Participant".to_string(),
+            description: "Selected for an intensive Columbia University program focused on advanced algorithms, graph theory, and dynamic programming with collegiate-level problem sets.".to_string(),
+            date: "Summer 2024".to_string(),
+            link: "".to_string(),
+            tags: vec![
+                "Algorithms".to_string(),
+                "Competitive Programming".to_string(),
+                "C++".to_string(),
             ],
         },
     ]
 }
 
-fn featured_media_images() -> Vec<MediaImage> {
-    vec![
-        MediaImage {
-            title: "Codificar Mentoring Session".to_string(),
-            description: "Teaching foundational Java concepts during a Codificar weekend class."
-                .to_string(),
-            src: "/static/media/images/codificar.jpg".to_string(),
-        },
-        MediaImage {
-            title: "Counterspell Robotics Build".to_string(),
-            description: "Fine tuning the Counterspell robot ahead of competition scrimmages."
-                .to_string(),
-            src: "/static/media/images/counterspell.jpg".to_string(),
-        },
-        MediaImage {
-            title: "MoMath Museum Research Exhibit".to_string(),
-            description: "Presenting interactive math demos during the MoMath museum residency."
-                .to_string(),
-            src: "/static/media/images/momath museum.jpg".to_string(),
-        },
-        MediaImage {
-            title: "National Honor Society Induction".to_string(),
-            description: "Receiving the NHS stole at the chapter induction ceremony.".to_string(),
-            src: "/static/media/images/nhs.jpg".to_string(),
-        },
-        MediaImage {
-            title: "NHS Service Project".to_string(),
-            description: "Collaborating with the NHS team on a community volunteer initiative."
-                .to_string(),
-            src: "/static/media/images/nhs2.jpg".to_string(),
-        },
-        MediaImage {
-            title: "Chamber Orchestra Performance".to_string(),
-            description:
-                "Dress rehearsal with the school chamber orchestra before the spring concert."
-                    .to_string(),
-            src: "/static/media/images/orchestra.jpg".to_string(),
-        },
-        MediaImage {
-            title: "VFW Voice of Democracy Award".to_string(),
-            description: "Honored at the VFW Voice of Democracy ceremony for county recognition."
-                .to_string(),
-            src: "/static/media/images/vfw.jpg".to_string(),
-        },
-    ]
+fn activities_list() -> Vec<ActivityListItem> {
+    activities_data()
+        .into_iter()
+        .map(|activity| {
+            let slug = slugify(&activity.title);
+            ActivityListItem { activity, slug }
+        })
+        .collect()
+}
+
+fn activity_hero(title: &str) -> (Option<&'static str>, Option<&'static str>) {
+    match title {
+        "Volunteer Service & Community Outreach" => (
+            Some("/static/media/images/nhs2.jpg"),
+            Some("Ethan Cha organizing community service volunteers during an NHS initiative"),
+        ),
+        "Capture The Flag (CTF) Club - Leader" => (
+            Some("/static/media/images/counterspell.jpg"),
+            Some("Ethan Cha coaching teammates through a competitive programming puzzle"),
+        ),
+        "Tennis - Junior Varsity Captain" => (
+            Some("/static/media/images/counterspell.jpg"),
+            Some("BCA athletes strategizing courtside with team captain Ethan Cha"),
+        ),
+        "Rock Climbing - Competitive Youth Team Member" => (
+            Some("/static/media/images/nhs.jpg"),
+            Some("Ethan Cha preparing for a climbing session with his youth team"),
+        ),
+        "Columbia Competitive Programming Camp - Participant" => (
+            Some("/static/media/images/counterspell.jpg"),
+            Some("Students collaborating during an advanced algorithms workshop at Columbia"),
+        ),
+        _ => (None, None),
+    }
 }
 
 fn create_resume_data() -> ResumeItem {
@@ -487,38 +314,6 @@ fn create_resume_data() -> ResumeItem {
                 tags: vec!["Arduino".to_string(), "Electronics".to_string(), "3D Printing".to_string(), "Sensors".to_string()],
             },
             Project {
-                title: "Volunteer Service".to_string(),
-                description: "LIBERTY SCIENCE CENTER: Presented hands-on demonstrations and guided guests through STEM exhibits as part of the museum's volunteer team. MUSEUM OF MATH (MOMATH): Led interactive math activities and supported educational programming for families and youth visitors. YOUTH COUNCIL FORT LEE (YCFL): Organized large-scale community events, including the Fort Lee Color Run, and participated in civic outreach initiatives. CHODAE CHURCH: Drummer for the youth praise team, contributing to weekly worship services and church events.".to_string(),
-                date: "700+ Hours".to_string(),
-                link: "".to_string(),
-                attachment: "".to_string(),
-                tags: vec![],
-            },
-            Project {
-                title: "Capture The Flag (CTF) Club - Leader".to_string(),
-                description: "Spearheaded a student cybersecurity team to compete in CTF tournaments, solving challenges involving network intrusion, cryptography, and binary exploitation. Coached peers in ethical hacking tools and techniques; placed top 3 in school-wide competitions.".to_string(),
-                date: "".to_string(),
-                link: "".to_string(),
-                attachment: "".to_string(),
-                tags: vec!["Cybersecurity".to_string(), "Cryptography".to_string(), "Network Security".to_string()],
-            },
-            Project {
-                title: "Tennis - Junior Varsity Captain".to_string(),
-                description: "Served as captain for the JV team, coordinating practices, leading strategy discussions, and mentoring new players. Competed in regional league matches and trained alongside varsity athletes.".to_string(),
-                date: "".to_string(),
-                link: "".to_string(),
-                attachment: "".to_string(),
-                tags: vec![],
-            },
-            Project {
-                title: "Rock Climbing - Competitive Youth Team Member".to_string(),
-                description: "Competed in bouldering and sport climbing events at local and regional levels as part of a certified youth climbing team. Trained 3x weekly to improve strength, endurance, and technique under professional coaching.".to_string(),
-                date: "".to_string(),
-                link: "".to_string(),
-                attachment: "".to_string(),
-                tags: vec![],
-            },
-            Project {
                 title: "Liquiboard: Research and Development of Dynamic Error-Correcting Keyboard App".to_string(),
                 description: "Developed a custom Android keyboard that utilizes machine learning to analyze and adapt to user's unique typing pattern. The keyboard dynamically adjusts the shape and sensitivity of key borders based on frequently tapped areas, reducing typing errors and improving overall accuracy and user experience.".to_string(),
                 date: "".to_string(),
@@ -534,15 +329,8 @@ fn create_resume_data() -> ResumeItem {
                 attachment: "".to_string(),
                 tags: vec!["Mobile Apps".to_string(), "AI".to_string(), "UI/UX Design".to_string()],
             },
-            Project {
-                title: "Columbia Competitive Programming Camp - Participant".to_string(),
-                description: "Selected for a two-week intensive training program hosted by Columbia University, focused on advanced algorithms, graph theory, and dynamic programming. Collaborated with college students on timed problem sets and algorithmic challenges under real competition conditions.".to_string(),
-                date: "".to_string(),
-                link: "".to_string(),
-                attachment: "".to_string(),
-                tags: vec!["Algorithms".to_string(), "Competitive Programming".to_string(), "C++".to_string()],
-            },
         ],
+        activities: activities_data(),
         awards: vec![
             Award { name: "AP Scholar with Distinction".to_string(), description: "".to_string(), date: "2025".to_string() },
             Award { name: "STEM Light House Challenge".to_string(), description: "2nd place".to_string(), date: "2023".to_string() },
@@ -585,27 +373,57 @@ pub async fn home_handler(
     render_cached_page(&state, "/", &ip, &template).await
 }
 
-pub async fn media_handler(
+pub async fn activities_handler(
     State(state): State<Arc<AppState>>,
     ConnectInfo(addr): ConnectInfo<SocketAddr>,
 ) -> Html<String> {
     let ip = addr.ip().to_string();
-    let videos = featured_media_videos();
-    let images = featured_media_images();
-
-    let template = MediaTemplate { videos, images };
-    render_cached_page(&state, "/media", &ip, &template).await
+    let activities = activities_list();
+    let template = ActivitiesTemplate { activities };
+    render_cached_page(&state, "/activities", &ip, &template).await
 }
 
-pub async fn media_gallery_handler(
+pub async fn activity_detail_handler(
+    Path(slug): Path<String>,
     State(state): State<Arc<AppState>>,
     ConnectInfo(addr): ConnectInfo<SocketAddr>,
 ) -> Html<String> {
     let ip = addr.ip().to_string();
-    let images = featured_media_images();
+    if let Some(item) = activities_list().into_iter().find(|entry| entry.slug == slug) {
+        let (hero_image_raw, hero_alt_raw) = activity_hero(&item.activity.title);
+        let hero_image_abs = hero_image_raw.map(|path| format!("{}{}", SITE_BASE, path));
+        let hero_image_clone = hero_image_abs.clone();
+        let has_hero_image = hero_image_abs.is_some();
+        let hero_image = hero_image_abs.unwrap_or_default();
+        let hero_alt = hero_alt_raw
+            .map(|alt| alt.to_string())
+            .unwrap_or_else(|| format!("{} spotlight", item.activity.title));
+        let og_image = hero_image_clone
+            .unwrap_or_else(|| format!("{}{}", SITE_BASE, "/static/media/images/nhs2.jpg"));
+        let og_image_alt = hero_alt.clone();
+        let mut keywords = vec![
+            item.activity.title.clone(),
+            "Ethan Cha".to_string(),
+            "Activity".to_string(),
+        ];
+        keywords.extend(item.activity.tags.clone());
+        let page_url = format!("{}/activities/{}", SITE_BASE, slug);
+        let template = ActivityDetailTemplate {
+            activity: item.activity,
+            slug: slug.clone(),
+            page_url,
+            hero_image,
+            hero_alt,
+            has_hero_image,
+            og_image,
+            og_image_alt,
+            keywords,
+        };
+        let cache_path = format!("/activities/{}", slug);
+        return render_cached_page(&state, &cache_path, &ip, &template).await;
+    }
 
-    let template = MediaGalleryTemplate { images };
-    render_cached_page(&state, "/media/gallery", &ip, &template).await
+    Html("<h1>Activity not found</h1>".to_string())
 }
 
 pub async fn achievements_handler(
@@ -797,40 +615,6 @@ pub async fn resume3_handler(
 
     let template = Resume3Template { resume };
     render_cached_page(&state, "/resume3", &ip, &template).await
-}
-
-pub async fn media3_handler(
-    State(state): State<Arc<AppState>>,
-    ConnectInfo(addr): ConnectInfo<SocketAddr>,
-) -> Html<String> {
-    let ip = addr.ip().to_string();
-    let videos = featured_media_videos();
-    let images = featured_media_images();
-
-    let template = Media3Template { videos, images };
-    render_cached_page(&state, "/media3", &ip, &template).await
-}
-
-pub async fn media_storyline_handler(
-    State(state): State<Arc<AppState>>,
-    ConnectInfo(addr): ConnectInfo<SocketAddr>,
-) -> Html<String> {
-    let ip = addr.ip().to_string();
-    let timeline = immersive_media_timeline();
-
-    let template = MediaStorylineTemplate { timeline };
-    render_cached_page(&state, "/media/storyline", &ip, &template).await
-}
-
-pub async fn media_experiences_handler(
-    State(state): State<Arc<AppState>>,
-    ConnectInfo(addr): ConnectInfo<SocketAddr>,
-) -> Html<String> {
-    let ip = addr.ip().to_string();
-    let experiences = curated_media_experiences();
-
-    let template = MediaExperiencesTemplate { experiences };
-    render_cached_page(&state, "/media/experiences", &ip, &template).await
 }
 
 async fn log_visit(state: &Arc<AppState>, page: &str, ip: &str) {

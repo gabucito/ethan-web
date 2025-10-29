@@ -33,6 +33,8 @@ async fn main() {
     // Build the router
     let app = Router::new()
         .route("/", get(home_handler))
+        .route("/activities", get(activities_handler))
+        .route("/activities/{slug}", get(activity_detail_handler))
         .route("/achievements", get(achievements_handler))
         .route("/achievements/{slug}", get(achievement_detail_handler))
         .route("/projects", get(projects_handler))
@@ -40,11 +42,6 @@ async fn main() {
         .route("/resume", get(resume_handler))
         .route("/resume2", get(resume2_handler))
         .route("/resume3", get(handlers::resume3_handler))
-        .route("/media", get(media_handler))
-        .route("/media/gallery", get(media_gallery_handler))
-        .route("/media3", get(handlers::media3_handler))
-        .route("/media/storyline", get(media_storyline_handler))
-        .route("/media/experiences", get(media_experiences_handler))
         .nest_service("/static", ServeDir::new(STATIC_PATH))
         .with_state(app_state);
 

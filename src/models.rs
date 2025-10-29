@@ -88,61 +88,24 @@ pub struct ResumeItem {
     pub skills: Vec<Skill>,
     pub experience: Vec<Achievement>,
     pub projects: Vec<Project>,
+    pub activities: Vec<Activity>,
     pub awards: Vec<Award>,
     pub certifications: Vec<Certification>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct MediaSource {
-    pub src: String,
-    pub mime: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct MediaVideo {
+pub struct Activity {
     pub title: String,
     pub description: String,
-    pub sources: Vec<MediaSource>,
-    pub poster: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct MediaImage {
-    pub title: String,
-    pub description: String,
-    pub src: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct MediaTimelineEntry {
-    pub period: String,
-    pub title: String,
-    pub description: String,
-    pub media_kind: String,
-    pub media_src: String,
-    pub poster: Option<String>,
-    pub accent: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct MediaExperienceHighlight {
-    pub title: String,
-    pub description: String,
-    pub media_kind: String,
-    pub media_src: String,
-    pub poster: Option<String>,
+    pub date: String,
+    pub link: String,
     pub tags: Vec<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct MediaExperience {
-    pub id: String,
-    pub name: String,
-    pub tagline: String,
-    pub description: String,
-    pub hero_image: String,
-    pub color: String,
-    pub highlights: Vec<MediaExperienceHighlight>,
+#[derive(Clone, Debug)]
+pub struct ActivityListItem {
+    pub activity: Activity,
+    pub slug: String,
 }
 
 #[derive(Clone)]
@@ -173,6 +136,12 @@ pub struct ProjectsTemplate {
 }
 
 #[derive(Debug, Template)]
+#[template(path = "activities.html")]
+pub struct ActivitiesTemplate {
+    pub activities: Vec<ActivityListItem>,
+}
+
+#[derive(Debug, Template)]
 #[template(path = "resume.html")]
 pub struct ResumeTemplate {
     pub resume: ResumeItem,
@@ -182,19 +151,6 @@ pub struct ResumeTemplate {
 #[template(path = "resume2.html")]
 pub struct Resume2Template {
     pub resume: ResumeItem,
-}
-
-#[derive(Debug, Template)]
-#[template(path = "media.html")]
-pub struct MediaTemplate {
-    pub videos: Vec<MediaVideo>,
-    pub images: Vec<MediaImage>,
-}
-
-#[derive(Debug, Template)]
-#[template(path = "media_gallery.html")]
-pub struct MediaGalleryTemplate {
-    pub images: Vec<MediaImage>,
 }
 
 #[derive(Debug, Template)]
@@ -226,26 +182,21 @@ pub struct ProjectDetailTemplate {
 }
 
 #[derive(Debug, Template)]
-#[template(path = "media_storyline.html")]
-pub struct MediaStorylineTemplate {
-    pub timeline: Vec<MediaTimelineEntry>,
-}
-
-#[derive(Debug, Template)]
-#[template(path = "media_experiences.html")]
-pub struct MediaExperiencesTemplate {
-    pub experiences: Vec<MediaExperience>,
-}
-
-#[derive(Debug, Template)]
 #[template(path = "resume3.html")]
 pub struct Resume3Template {
     pub resume: ResumeItem,
 }
 
 #[derive(Debug, Template)]
-#[template(path = "media3.html")]
-pub struct Media3Template {
-    pub videos: Vec<MediaVideo>,
-    pub images: Vec<MediaImage>,
+#[template(path = "activity_detail.html")]
+pub struct ActivityDetailTemplate {
+    pub activity: Activity,
+    pub slug: String,
+    pub page_url: String,
+    pub hero_image: String,
+    pub hero_alt: String,
+    pub has_hero_image: bool,
+    pub og_image: String,
+    pub og_image_alt: String,
+    pub keywords: Vec<String>,
 }
