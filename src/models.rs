@@ -142,12 +142,6 @@ pub struct ActivitiesTemplate {
 }
 
 #[derive(Debug, Template)]
-#[template(path = "resume.html")]
-pub struct ResumeTemplate {
-    pub resume: ResumeItem,
-}
-
-#[derive(Debug, Template)]
 #[template(path = "resume2.html")]
 pub struct Resume2Template {
     pub resume: ResumeItem,

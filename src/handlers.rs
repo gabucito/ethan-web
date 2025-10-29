@@ -2,7 +2,7 @@ use crate::models::{
     Achievement, AchievementDetailTemplate, AchievementListItem, AchievementsTemplate, Activity,
     ActivityDetailTemplate, ActivityListItem, ActivitiesTemplate, AppState, Award, Certification,
     Education, HomeTemplate, PersonalInfo, Project, ProjectDetailTemplate, ProjectListItem,
-    ProjectsTemplate, Resume2Template, Resume3Template, ResumeItem, ResumeTemplate, Skill,
+    ProjectsTemplate, Resume2Template, Resume3Template, ResumeItem, Skill,
 };
 use axum::{
     extract::{ConnectInfo, Path, State},
@@ -542,20 +542,17 @@ pub async fn resume_handler(
     ConnectInfo(addr): ConnectInfo<SocketAddr>,
 ) -> Html<String> {
     let ip = addr.ip().to_string();
-    let resume = create_resume_data();
+    let mut resume = create_resume_data();
 
-    // Modify resume to include the additional skill for resume handler
-    let mut resume = resume.clone();
-    if let Some(skills) = resume
-        .skills
-        .iter_mut()
-        .find(|s| s.category == "Programming Languages")
-        && !skills.skills.contains(&"Dart".to_string())
-    {
-        skills.skills.push("Dart".to_string());
+    // Keep the published entries concise for the interactive view
+    for exp in &mut resume.experience {
+        if exp.title.contains("Published") && exp.description.chars().count() > 150 {
+            let truncated = exp.description.chars().take(150).collect::<String>();
+            exp.description = format!("{}...", truncated);
+        }
     }
 
-    let template = ResumeTemplate { resume };
+    let template = Resume3Template { resume };
     render_cached_page(&state, "/resume", &ip, &template).await
 }
 
@@ -590,31 +587,6 @@ pub async fn resume2_handler(
 
     let template = Resume2Template { resume };
     render_cached_page(&state, "/resume2", &ip, &template).await
-}
-
-pub async fn resume3_handler(
-    State(state): State<Arc<AppState>>,
-    ConnectInfo(addr): ConnectInfo<SocketAddr>,
-) -> Html<String> {
-    let ip = addr.ip().to_string();
-    let resume = create_resume_data();
-
-    // Modify resume for resume3 - remove some details for a cleaner look
-    let mut resume = resume.clone();
-
-    // For resume3, maybe show a more compact version
-    for exp in &mut resume.experience {
-        if exp.title.contains("Published") {
-            // Truncate long descriptions
-            if exp.description.chars().count() > 150 {
-                let truncated = exp.description.chars().take(150).collect::<String>();
-                exp.description = format!("{}...", truncated);
-            }
-        }
-    }
-
-    let template = Resume3Template { resume };
-    render_cached_page(&state, "/resume3", &ip, &template).await
 }
 
 async fn log_visit(state: &Arc<AppState>, page: &str, ip: &str) {
