@@ -27,6 +27,7 @@ impl CacheManager {
         path.to_string()
     }
 
+    // Maybe doesn't work?
     pub async fn invalidate(&self) {
         self.cache.invalidate_all();
     }
