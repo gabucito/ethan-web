@@ -62,6 +62,10 @@ fn achievement_hero(title: &str) -> (Option<&'static str>, Option<&'static str>)
             Some("/static/media/images/momath museum.jpg"),
             Some("Ethan Cha engaging visitors with an interactive research demonstration"),
         ),
+        "Associate Intern - Karani Asset Management" => (
+            Some("/static/media/images/codificar.jpg"),
+            Some("Ethan Cha collaborating with the Karani Asset Management investment team"),
+        ),
         "Columbia Science Honors Program - Scholar" => (
             Some("/static/media/images/orchestra.jpg"),
             Some("Ethan Cha collaborating with peers during an intensive STEM enrichment program"),
@@ -264,6 +268,12 @@ fn create_resume_data() -> ResumeItem {
                 description: "Helped monitor and maintain clients' systems to ensure consistent performance and minimal downtime. Collaborated on diagnosing and resolving a range of IT issues, from network connectivity challenges to software errors. Assisted in managing cloud services, including data migrations and secure storage solutions. Learned to use industry-standard remote monitoring and management (RMM) tools to oversee IT environments. Contributed to documentation efforts, creating guides and process manuals for both internal use and client reference. Participated in team discussions to develop new strategies for optimizing IT operations.".to_string(),
                 date: "Jul. 2024 - Present".to_string(),
                 link: "https://www.chibitek.com/".to_string(),
+            },
+            Achievement {
+                title: "Associate Intern - Karani Asset Management".to_string(),
+                description: "Evaluated how artificial intelligence could enhance the firm's investment process, including market sentiment analysis, portfolio monitoring, and internal workflow automation strategies.".to_string(),
+                date: "2025 - Present".to_string(),
+                link: "".to_string(),
             },
             Achievement {
                 title: "Published Research Paper in Journal of International Research".to_string(),
