@@ -2,57 +2,51 @@ name: Deploy to VPS
 
 on:
   push:
-    branches: ["main"]   # adjust if needed
+    branches: ["main"]
+
+permissions:
+  contents: read
 
 jobs:
-  build-and-restart:
-    runs-on: self-hosted
-    labels: ["resume","axum"]   # must include a label you set on the runner
+  deploy:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+
+      - name: Start SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
         with:
-          toolchain: stable
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
 
-      - name: Cache cargo
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: ${{ runner.os }}-cargo-
-
-      # Sync repo to your live directory (fast & safe)
-      - name: Sync source to /opt/resume/ethan-web
+      - name: Sync source to VPS
         run: |
-          rsync -a --delete --exclude target ./ /opt/resume/ethan-web/
+          rsync -az --delete --exclude target ./ $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
 
-      - name: Build (release)
-        working-directory: /opt/resume/ethan-web
+      - name: Build and restart service
         run: |
-          ~/.cargo/bin/cargo build --release --locked
-
-      # (Optional) copy/rename to a stable path if your binary name differs
-      - name: Ensure binary path matches systemd ExecStart
-        run: |
-          test -x /opt/resume/ethan-web/target/release/ethan-web
-
-      - name: Restart service
-        run: sudo systemctl restart ethan-web
-
-      - name: Health check
-        run: |
-          for i in {1..20}; do
-            curl -fsS http://127.0.0.1:3000/health && exit 0
-            sleep 1
-          done
-          echo "Health check failed" >&2
-          sudo journalctl -u ethan-web --no-pager -n 200
-          exit 1
+          ssh $DEPLOY_USER@$DEPLOY_HOST '
+            set -e
+            cd '"$DEPLOY_PATH"' &&
+            source $HOME/.cargo/env ||
+            (curl -fsSL https://sh.rustup.rs | sh -s -- -y && source $HOME/.cargo/env)
+            cargo build --release --locked
+            sudo systemctl restart '"$SERVICE_NAME"'
+          '
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
