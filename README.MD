@@ -1,0 +1,1 @@
+Whenever the repo updates, the runner in the VPS should update the site
