@@ -209,6 +209,13 @@
                         <div class="item-description">{{ award.description }}</div>
                         {% endif %}
                         <div class="achievement-date">{{ award.date }}</div>
+                        {% if !award.attachment.is_empty() %}
+                        <div style="margin-top: 8px;">
+                            <a href="/static/{{ award.attachment }}" target="_blank" class="action-btn">
+                                <i class="fas fa-file-download"></i> View certificate
+                            </a>
+                        </div>
+                        {% endif %}
                     </div>
                     {% endfor %}
                 </div>

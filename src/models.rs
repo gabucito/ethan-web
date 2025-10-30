@@ -72,6 +72,7 @@ pub struct Award {
     pub name: String,
     pub description: String,
     pub date: String,
+    pub attachment: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]

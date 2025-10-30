@@ -126,7 +126,14 @@
             <h2>Awards & Honors</h2>
             <ul>
             {% for award in resume.awards %}
-                <li><strong>{{ award.name }}</strong> - {{ award.description }} <em>{{ award.date }}</em></li>
+                <li>
+                    <strong>{{ award.name }}</strong>
+                    {% if award.description != "" %}- {{ award.description }}{% endif %}
+                    <em>{{ award.date }}</em>
+                    {% if award.attachment != "" %}
+                    — <a href="/static/{{ award.attachment }}" target="_blank" download>View certificate</a>
+                    {% endif %}
+                </li>
             {% endfor %}
             </ul>
         </section>
